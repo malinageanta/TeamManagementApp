@@ -1,37 +1,42 @@
-import React, { Component} from 'react';
+import React, { Component } from 'react';
 import './App.css';
+import { connect } from 'react-redux';
+import { getUsers } from './actions/userActions';
+import PropTypes from 'prop-types';
+import { loadUser } from './actions/authActions';
+import store from './store';
+import Registration from './components/auth/Registration';
+import Login from './components/auth/Login';
 
 class App extends Component {
-  constructor(props)
-  {
-    super(props);
-    this.state = {users: []};
-  }
-
-  callApi()
-  {
-    fetch("/users")
+  callApi() {
+    fetch("/teams")
       .then(res => res.json())
       .then(users => this.setState({ users }));
   }
 
   componentDidMount() {
-    this.callApi();
+    //this.props.getUsers();
+    //this.callApi();
+    store.dispatch(loadUser());
   }
 
-  render()
-  {
+  render() {
     return (
       <div className="App">
-        <h1> Users </h1>
-        <ul>
-          {this.state.users.map(user => 
-            <li>{user.name}</li>
-          )}
-        </ul>
+        <Login />
       </div>
     );
   }
 }
 
-export default App;
+App.propTypes = {
+  getUsers: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired
+}
+
+const mapStateToProps = (state) => ({
+  user: state.user
+});
+
+export default connect(mapStateToProps, { getUsers })(App);
