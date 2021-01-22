@@ -1,9 +1,14 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { Form, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
+import { Form, Button, Row, Col } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { login } from '../../actions/authActions';
-import Logout from './Logout';
+import sideImage from '../../images/teamwork-and-team-building.png';
+import '../../css/Authentication.css';
+import { Card } from '@material-ui/core';
+import { Alert } from '@material-ui/lab'
+import { Link, Redirect } from 'react-router-dom'
+
 
 class Registration extends Component {
     constructor(props) {
@@ -11,7 +16,6 @@ class Registration extends Component {
         this.state = {
             email: '',
             password: '',
-            repeatedPassword: '',
             errorMsg: null
         };
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -24,9 +28,9 @@ class Registration extends Component {
         });
     }
 
-    handleSubmit() {
+    handleSubmit(e) {
+        e.preventDefault();
         const { email, password } = this.state;
-
         const user = {
             email,
             password
@@ -42,43 +46,52 @@ class Registration extends Component {
                 this.setState({ errorMsg: error.msg.msg });
             }
             else {
-                this.setState({ msg: null });
+                this.setState({ errorMsg: null });
             }
         }
+
     }
 
     render() {
+        alert =
+            <Alert severity="error">
+                {this.state.errorMsg}
+            </Alert>
+
         return (
             <div>
-                {this.props.isAuthenticated ?
-                    <Alert color="warning">
-                        authenticated
-                </Alert> : <Alert color="warning">
-                        not authenticated
-                            </Alert>
-                }
-                <Form>
-                    <FormGroup>
-                        <Label for="Email">Email</Label>
-                        <Input type="email" name="email" id="Email" placeholder="Enter email" onChange={this.handleChange} />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label for="Password">Password</Label>
-                        <Input type="password" name="password" id="Password" placeholder="Enter password" onChange={this.handleChange} />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label for="RepeatedPassword">Confirm Password</Label>
-                        <Input type="password" name="repeatedPassword" id="RepeatedPassword" placeholder="Repeat Password" onChange={this.handleChange} />
-                    </FormGroup>
-                    <FormGroup>
-                        <Logout />
-                        <Button color="info" onClick={this.handleSubmit}>Submit</Button>
-                    </FormGroup>
-                    <Alert color="danger">
-                        {this.state.errorMsg}
-                    </Alert>
-                </Form>
-            </div>
+                <div className="split right">
+                    <div className="centered">
+                        <img src={sideImage} />
+                    </div>
+                </div>
+                <div className="split left">
+                    <div className="centered">
+                        <h1 style={{ marginBottom: "36px", color: "#3C4166" }}>Login</h1>
+                        <Card style={{ minWidth: "30vw" }} variant="outlined">
+                            <Form onSubmit={this.handleSubmit}>
+                                <Form.Group style={{ textAlign: "left" }}>
+                                    <Form.Label style={{ padding: "10px" }}>Email</Form.Label>
+                                    <Form.Control type="email" name="email" id="Email" placeholder="Enter email" onChange={this.handleChange} />
+                                </Form.Group>
+                                <Form.Group style={{ textAlign: "left" }}>
+                                    <Form.Label style={{ padding: "10px" }}>Password</Form.Label>
+                                    <Form.Control type="password" name="password" id="Password" placeholder="Enter password" onChange={this.handleChange} />
+                                </Form.Group>
+                                <Form.Group>
+                                    <Link to="/registration">
+                                        <Button variant="danger">Sign up</Button>
+                                    </Link>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <Button variant="info" type="submit">Login</Button>
+                                </Form.Group>
+                            </Form>
+                            {this.state.errorMsg ? alert : null}
+                        </Card>
+                    </div>
+                </div>
+            </div >
+
         )
     }
 }

@@ -1,0 +1,38 @@
+/* Split the screen in half */
+.split {
+    height: 100%;
+    width: 50%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    overflow-x: hidden;
+    padding-top: 20px;
+  }
+  
+  /* Control the left side */
+  .left {
+    left: 0;
+  }
+  
+  /* Control the right side */
+  .right {
+    right: 0;
+    background-color: #F3EBFF;
+  }
+  
+  /* If you want the content centered horizontally and vertically */
+  .centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+.btn-info, .btn-info:hover, .btn-info:active, .btn-info:visited {
+    background-color: #674DA1 !important;
+}
+
+.btn-danger, .btn-danger:hover, .btn-danger:active, .btn-danger:visited {
+    background-color: #EB5B75 !important;
+}

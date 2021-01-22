@@ -8,13 +8,12 @@ require('dotenv/config');
 
 
 /* GET users listing. */
-router.get('/', async(req, res) => {
-  try
-  {
+router.get('/', async (req, res) => {
+  try {
     var users = await User.find();
     res.json(users);
   }
-  catch(err) {
+  catch (err) {
     res.send('Error: ' + err);
   }
 });
@@ -67,17 +66,16 @@ router.get('/', async(req, res) => {
 //   }
 //  });
 
-router.post('/', async(req, res) => {
-  try
-  {
+router.post('/', async (req, res) => {
+  try {
     const { firstName, lastName, email, password } = req.body;
-    if(!firstName || !lastName || !email || !password) {
-      return res.status(400).json({msg: 'Please enter all fields.'});
+    if (!firstName || !lastName || !email || !password) {
+      return res.status(400).json({ msg: 'Please enter all fields.' });
     }
 
     User.findOne({ email })
       .then(user => {
-        if(user) return res.status(400).json({msg: 'User already exists.'});
+        if (user) return res.status(400).json({ msg: 'User already exists.' });
         const newUser = new User({
           firstName,
           lastName,
@@ -85,34 +83,34 @@ router.post('/', async(req, res) => {
           password
         });
 
-      // Create salt & hash
-      bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(newUser.password, salt, (err, hash) => {
-          if(err) throw err;
-          newUser.password = hash;
-          newUser.save()
-            .then(user => {
-            jwt.sign(
-              { id: user.id },
-              process.env.JWT_SECRET,
-              {expiresIn: 3600},
-              (err, token) => {
-                if(err) throw err;
-                res.json({
-                  token,
-                  user: {
-                    id: user.id,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    email: user.email
-                  }
-                });
-              });              
-            });
+        // Create salt & hash
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(newUser.password, salt, (err, hash) => {
+            if (err) throw err;
+            newUser.password = hash;
+            newUser.save()
+              .then(user => {
+                jwt.sign(
+                  { id: user.id },
+                  process.env.JWT_SECRET,
+                  { expiresIn: 3600 },
+                  (err, token) => {
+                    if (err) throw err;
+                    res.json({
+                      token,
+                      user: {
+                        id: user.id,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        email: user.email
+                      }
+                    });
+                  });
+              });
           });
         })
       });
-  }catch(err){
+  } catch (err) {
     res.send('Error: ' + err);
   }
 });

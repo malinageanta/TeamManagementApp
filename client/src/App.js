@@ -1,42 +1,45 @@
 import React, { Component } from 'react';
 import './App.css';
+import { createBrowserHistory } from 'history';
 import { connect } from 'react-redux';
 import { getUsers } from './actions/userActions';
 import PropTypes from 'prop-types';
 import { loadUser } from './actions/authActions';
-import store from './store';
 import Registration from './components/auth/Registration';
 import Login from './components/auth/Login';
+import Dashboard from './components/Dashboard';
+import { Router, Switch, Route } from 'react-router-dom';
+import PrivateRoute from './utils/PrivateRoute';
+import AuthRoute from './utils/AuthRoute';
+
+
+export const history = createBrowserHistory();
 
 class App extends Component {
-  callApi() {
-    fetch("/teams")
-      .then(res => res.json())
-      .then(users => this.setState({ users }));
-  }
-
-  componentDidMount() {
-    //this.props.getUsers();
-    //this.callApi();
-    store.dispatch(loadUser());
+  constructor(props) {
+    super(props);
+    this.props.loadUser();
   }
 
   render() {
     return (
-      <div className="App">
-        <Login />
-      </div>
+      <Router history={history}>
+        <AuthRoute path="/registration" component={Registration} />
+        <AuthRoute path="/" exact component={Login} />
+        <PrivateRoute path="/dashboard" component={Dashboard} />
+      </Router>
     );
   }
 }
 
 App.propTypes = {
-  getUsers: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired
+  loadUser: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool
 }
 
 const mapStateToProps = (state) => ({
-  user: state.user
+  isAuthenticated: state.auth.isAuthenticated,
+  isLoading: state.auth.isLoading
 });
 
-export default connect(mapStateToProps, { getUsers })(App);
+export default connect(mapStateToProps, { loadUser })(App);

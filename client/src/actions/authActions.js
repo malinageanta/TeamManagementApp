@@ -49,7 +49,7 @@ export const register = ({ firstName, lastName, email, password }) => dispatch =
         }
     };
 
-    const body = JSON.stringify({ firstName, lastName, email, password });
+    const body = { firstName, lastName, email, password };
 
     axios.post('/users', body, config)
         .then(res => dispatch({
