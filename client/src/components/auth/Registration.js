@@ -2,12 +2,12 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import { Form, Button, Col } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import { register } from '../../actions/authActions';
+import { register } from '../../actions/userActions';
 import sideImage from '../../images/teamwork-and-team-building.png';
 import '../../css/Authentication.css';
 import { Card } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 class Registration extends Component {
     constructor(props) {
@@ -18,6 +18,8 @@ class Registration extends Component {
             email: '',
             password: '',
             repeatedPassword: '',
+            role: { name: 'basic', permissions: '' },
+            team: "",
             errorMsg: null
         };
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -32,13 +34,15 @@ class Registration extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const { firstName, lastName, email, password } = this.state;
+        const { firstName, lastName, email, password, role, team } = this.state;
 
         const newUser = {
             firstName,
             lastName,
             email,
-            password
+            password,
+            role,
+            team
         };
         if (this.state.repeatedPassword === this.state.password) {
             this.props.register(newUser);
@@ -64,7 +68,7 @@ class Registration extends Component {
     }
 
     render() {
-        alert =
+        var alert =
             <Alert severity="error">
                 {this.state.errorMsg}
             </Alert>
@@ -72,36 +76,36 @@ class Registration extends Component {
             <div>
                 <div className="split right">
                     <div className="centered">
-                        <img src={sideImage} />
+                        <img alt="Check it out" src={sideImage} />
                     </div>
                 </div>
                 <div>
                     <div className="split left">
                         <div className="centered">
-                            <h1 style={{ marginBottom: "18px", color: "#3C4166" }}>Sign up</h1>
-                            <Card style={{ minWidth: "30vw" }} variant="outlined">
+                            <h1 className="auth-header">Sign up</h1>
+                            <Card className="auth-card" variant="outlined">
                                 <Form onSubmit={this.handleSubmit}>
                                     <Form.Row>
-                                        <Form.Group as={Col} style={{ textAlign: "left" }}>
-                                            <Form.Label style={{ padding: "10px" }}>First Name</Form.Label>
+                                        <Form.Group as={Col} className="auth-form-group">
+                                            <Form.Label className="auth-form-label">First Name</Form.Label>
                                             <Form.Control type="text" name="firstName" id="FirstName" placeholder="Enter first name" onChange={this.handleChange} />
                                         </Form.Group>
-                                        <Form.Group as={Col} style={{ textAlign: "left" }}>
-                                            <Form.Label style={{ padding: "10px" }}>Last Name</Form.Label>
+                                        <Form.Group as={Col} className="auth-form-group">
+                                            <Form.Label className="auth-form-label">Last Name</Form.Label>
                                             <Form.Control type="text" name="lastName" id="LastName" placeholder="Enter last name" onChange={this.handleChange} />
                                         </Form.Group>
                                     </Form.Row>
-                                    <Form.Group style={{ textAlign: "left" }}>
-                                        <Form.Label style={{ padding: "10px" }}>Email</Form.Label>
+                                    <Form.Group className="auth-form-group">
+                                        <Form.Label className="auth-form-label">Email</Form.Label>
                                         <Form.Control type="email" name="email" id="Email" placeholder="Enter email" onChange={this.handleChange} />
                                     </Form.Group>
                                     <Form.Row>
-                                        <Form.Group as={Col} style={{ textAlign: "left" }}>
-                                            <Form.Label style={{ padding: "10px" }}>Password</Form.Label>
+                                        <Form.Group as={Col} className="auth-form-group">
+                                            <Form.Label className="auth-form-label">Password</Form.Label>
                                             <Form.Control type="password" name="password" id="Password" placeholder="Enter password" onChange={this.handleChange} />
                                         </Form.Group>
-                                        <Form.Group as={Col} style={{ textAlign: "left" }}>
-                                            <Form.Label style={{ padding: "10px" }}>Confirm Password</Form.Label>
+                                        <Form.Group as={Col} className="auth-form-group">
+                                            <Form.Label className="auth-form-label">Confirm Password</Form.Label>
                                             <Form.Control type="password" name="repeatedPassword" id="RepeatedPassword" placeholder="Repeat Password" onChange={this.handleChange} />
                                         </Form.Group>
                                     </Form.Row>
@@ -130,7 +134,7 @@ Registration.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated,
+    isAuthenticated: state.user.isAuthenticated,
     error: state.error
 });
 

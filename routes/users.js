@@ -3,14 +3,14 @@ var router = express.Router();
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const auth = require('../middleware/auth');
 
 require('dotenv/config');
 
-
 /* GET users listing. */
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
   try {
-    var users = await User.find();
+    const users = await User.find();
     res.json(users);
   }
   catch (err) {
@@ -18,57 +18,9 @@ router.get('/', async (req, res) => {
   }
 });
 
-//  router.post('/', async(req, res) => {
-//   try
-//   {
-//     const team = new Team({
-//       name: req.body.name
-//     });
-//     const t = await team.save();
-//     res.json(t);
-//   }catch(err){
-//     res.send('Error: ' + err);
-//   }
-//  });
-
-//  router.get('/:postId', async(req, res) => {
-//   try
-//   {
-//     var teams = await Team.findById(req.params.postId);
-//     res.json(teams);
-//   }
-//   catch(err) {
-//     res.send('Error: ' + err);
-//   }
-//  });
-
-//  router.delete('/:postId', async(req, res) => {
-//   try
-//   {
-//     var teams = await Team.remove({_id: req.params.postId});
-//     res.json(teams);
-//   }
-//   catch(err) {
-//     res.send('Error: ' + err);
-//   }
-//  });
-
-//  router.patch('/:postId', async(req, res) => {
-//   try
-//   {
-//     const t = await Team.updateOne(
-//           {_id: req.params.postId}, 
-//           {$set : {name: req.body.name}
-//         });
-//     res.json(t);
-//   }catch(err){
-//     res.send('Error: ' + err);
-//   }
-//  });
-
 router.post('/', async (req, res) => {
   try {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password, role, team } = req.body;
     if (!firstName || !lastName || !email || !password) {
       return res.status(400).json({ msg: 'Please enter all fields.' });
     }
@@ -80,9 +32,10 @@ router.post('/', async (req, res) => {
           firstName,
           lastName,
           email,
-          password
+          password,
+          role,
+          team
         });
-
         // Create salt & hash
         bcrypt.genSalt(10, (err, salt) => {
           bcrypt.hash(newUser.password, salt, (err, hash) => {
@@ -102,7 +55,9 @@ router.post('/', async (req, res) => {
                         id: user.id,
                         firstName: user.firstName,
                         lastName: user.lastName,
-                        email: user.email
+                        email: user.email,
+                        role: user.role,
+                        team: user.team
                       }
                     });
                   });
@@ -111,6 +66,33 @@ router.post('/', async (req, res) => {
         })
       });
   } catch (err) {
+    res.send('Error: ' + err);
+  }
+});
+
+router.patch('/:id', auth, async (req, res) => {
+  try {
+    var updatedUser = null;
+    if (req.body?.team) {
+      updatedUser = await User.updateOne(
+        { _id: req.params.id },
+        { $set: { team: req.body.team } }
+      )
+    }
+    else if (req.body?.role) {
+      updatedUser = await User.updateOne(
+        { _id: req.params.id },
+        { $set: { role: req.body.role } }
+      )
+    }
+    if (updatedUser) {
+      res.json(updatedUser);
+    }
+    else {
+      res.status(400).json({ msg: "No user updated!" });
+    }
+  }
+  catch (err) {
     res.send('Error: ' + err);
   }
 });

@@ -5,12 +5,12 @@ import { Route, Redirect } from 'react-router-dom';
 
 export const AuthRoute = ({
     isAuthenticated,
-    isLoading,
+    userIsLoading,
     component: Component,
     ...rest
 }) => (
     <Route {...rest} component={(props) => {
-        if (isLoading === true)
+        if (userIsLoading === true)
             return null;
         else if (isAuthenticated === true) {
             return (<Redirect to="/dashboard" />)
@@ -26,8 +26,8 @@ export const AuthRoute = ({
 
 const mapStatetoProps = (state) => {
     return {
-        isAuthenticated: state.auth.isAuthenticated,
-        isLoading: state.auth.isLoading
+        isAuthenticated: state.user.isAuthenticated,
+        userIsLoading: state.user.userIsLoading
     }
 }
 

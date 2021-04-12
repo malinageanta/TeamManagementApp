@@ -29,10 +29,19 @@
     text-align: center;
   }
 
-.btn-info, .btn-info:hover, .btn-info:active, .btn-info:visited {
-    background-color: #674DA1 !important;
-}
+  .auth-header {
+    margin-bottom: 36px;
+    color: #3C4166;
+  }
 
-.btn-danger, .btn-danger:hover, .btn-danger:active, .btn-danger:visited {
-    background-color: #EB5B75 !important;
-}
+  .auth-card {
+    min-width: 30vw;
+  }
+
+  .auth-form-group {
+    text-align: left;
+  }
+
+  .auth-form-label {
+    padding: 10px;
+  }

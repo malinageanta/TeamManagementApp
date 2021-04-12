@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
 import userReducer from './userReducer';
 import errorReducer from './errorReducer';
-import authReducer from './authReducer';
+import teamReducer from './teamReducer';
 
 const rootReducer = combineReducers({
     user: userReducer,
     error: errorReducer,
-    auth: authReducer
+    team: teamReducer
 });
 
 export default rootReducer;

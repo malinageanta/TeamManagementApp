@@ -10,7 +10,6 @@
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "dependencies": {
-    "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "bcrypt": "^5.0.0",
     "bcryptjs": "^2.4.3",

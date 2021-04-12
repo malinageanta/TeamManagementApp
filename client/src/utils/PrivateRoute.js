@@ -5,12 +5,12 @@ import { Route, Redirect } from 'react-router-dom';
 
 export const PrivateRoute = ({
     isAuthenticated,
-    isLoading,
+    userIsLoading,
     component: Component,
     ...rest
 }) => (
     <Route {...rest} component={(props) => {
-        if (isLoading === true)
+        if (userIsLoading === true)
             return null;
         else if (isAuthenticated) {
             return (<div>
@@ -25,8 +25,8 @@ export const PrivateRoute = ({
 
 const mapStateToProps = (state) => {
     return {
-        isAuthenticated: state.auth.isAuthenticated,
-        isLoading: state.auth.isLoading
+        isAuthenticated: state.user.isAuthenticated,
+        userIsLoading: state.user.userIsLoading
     }
 }
 

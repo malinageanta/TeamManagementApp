@@ -8,20 +8,9 @@ const auth = require('../middleware/auth');
 require('dotenv/config');
 
 
-/* GET users listing. */
-router.get('/', async (req, res) => {
-  try {
-    var users = await User.find();
-    res.json(users);
-  }
-  catch (err) {
-    res.send('Error: ' + err);
-  }
-});
-
 router.post('/', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role, team } = req.body;
     if (!email || !password) {
       return res.status(400).json({ msg: 'Please enter all fields.' });
     }
@@ -36,7 +25,7 @@ router.post('/', async (req, res) => {
             jwt.sign(
               { id: user.id },
               process.env.JWT_SECRET,
-              { expiresIn: 3600 },
+              { expiresIn: 6000 },
               (err, token) => {
                 if (err) throw err;
                 res.json({
@@ -45,7 +34,9 @@ router.post('/', async (req, res) => {
                     id: user.id,
                     firstName: user.firstName,
                     lastName: user.lastName,
-                    email: user.email
+                    email: user.email,
+                    role: user.role,
+                    team: user.team
                   }
                 });
               });

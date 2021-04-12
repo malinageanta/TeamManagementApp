@@ -1,12 +1,26 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
+import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import InputBase from '@material-ui/core/InputBase';
+import Badge from '@material-ui/core/Badge';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import MenuIcon from '@material-ui/icons/Menu';
+import SearchIcon from '@material-ui/icons/Search';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import MailIcon from '@material-ui/icons/Mail';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import MoreIcon from '@material-ui/icons/MoreVert';
+import clsx from 'clsx';
+import { useTheme } from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
+import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -14,21 +28,34 @@ import GroupIcon from '@material-ui/icons/Group';
 import AnnouncementIcon from '@material-ui/icons/Announcement';
 import AccountTreeIcon from '@material-ui/icons/AccountTree';
 import AssignmentIcon from '@material-ui/icons/Assignment';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import drawerIcon from '../images/team-icon.png';
+import drawerIcon from '../images/team_work.jpg';
 import '../css/Drawer.css';
 import Logout from './auth/Logout';
 
-
-
 const drawerWidth = 240;
-
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
     },
     appBar: {
-        zIndex: theme.zIndex.drawer + 1,
+        transition: theme.transitions.create(['margin', 'width'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+    },
+    appBarShift: {
+        width: `calc(100% - ${drawerWidth}px)`,
+        marginLeft: drawerWidth,
+        transition: theme.transitions.create(['margin', 'width'], {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    },
+    menuButton: {
+        marginRight: theme.spacing(2),
+    },
+    hide: {
+        display: 'none',
     },
     drawer: {
         width: drawerWidth,
@@ -37,90 +64,310 @@ const useStyles = makeStyles((theme) => ({
     drawerPaper: {
         width: drawerWidth,
     },
-    drawerContainer: {
-        overflow: 'auto',
+    drawerHeader: {
+        display: 'flex',
+        alignItems: 'center',
+        padding: theme.spacing(0, 1),
+        // necessary for content to be below app bar
+        ...theme.mixins.toolbar,
+        justifyContent: 'flex-end',
     },
     content: {
         flexGrow: 1,
         padding: theme.spacing(3),
+        transition: theme.transitions.create('margin', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        marginLeft: -drawerWidth,
+    },
+    contentShift: {
+        transition: theme.transitions.create('margin', {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+        marginLeft: 0,
+    },
+    grow: {
+        flexGrow: 1,
+    },
+    title: {
+        display: 'none',
+        [theme.breakpoints.up('sm')]: {
+            display: 'block',
+        },
+    },
+    search: {
+        position: 'relative',
+        borderRadius: theme.shape.borderRadius,
+        backgroundColor: fade(theme.palette.common.white, 0.15),
+        '&:hover': {
+            backgroundColor: fade(theme.palette.common.white, 0.25),
+        },
+        marginRight: theme.spacing(2),
+        marginLeft: 0,
+        width: '100%',
+        [theme.breakpoints.up('sm')]: {
+            marginLeft: theme.spacing(3),
+            width: 'auto',
+        },
+    },
+    searchIcon: {
+        padding: theme.spacing(0, 2),
+        height: '100%',
+        position: 'absolute',
+        pointerEvents: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    inputRoot: {
+        color: 'inherit',
+    },
+    inputInput: {
+        padding: theme.spacing(1, 1, 1, 0),
+        // vertical padding + font size from searchIcon
+        paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+        transition: theme.transitions.create('width'),
+        width: '100%',
+        [theme.breakpoints.up('md')]: {
+            width: '20ch',
+        },
+    },
+    sectionDesktop: {
+        display: 'none',
+        [theme.breakpoints.up('md')]: {
+            display: 'flex',
+        },
+    },
+    sectionMobile: {
+        display: 'flex',
+        [theme.breakpoints.up('md')]: {
+            display: 'none',
+        },
     },
 }));
 
-export var SideBar = function () {
+export default function PrimarySearchAppBar() {
     const classes = useStyles();
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+
+    const isMenuOpen = Boolean(anchorEl);
+    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+    const theme = useTheme();
+    const [open, setOpen] = React.useState(false);
+    const [showComponent, setShowComponent] = React.useState(false);
+
+    const handleDrawerOpen = () => {
+        setOpen(true);
+    };
+
+    const handleDrawerClose = () => {
+        setOpen(false);
+    };
+
+    const handleProfileMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMobileMenuClose = () => {
+        setMobileMoreAnchorEl(null);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+        handleMobileMenuClose();
+    };
+
+
+    const handleLogout = () => {
+        setShowComponent(true);
+    }
+
+    const handleMobileMenuOpen = (event) => {
+        setMobileMoreAnchorEl(event.currentTarget);
+    };
+
+    const menuId = 'primary-search-account-menu';
+    const renderMenu = (
+        <Menu
+            anchorEl={anchorEl}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            id={menuId}
+            keepMounted
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            open={isMenuOpen}
+            onClose={handleMenuClose}
+        >
+            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            {showComponent ?
+                <Logout /> :
+                null
+            }
+        </Menu>
+    );
+
+    const mobileMenuId = 'primary-search-account-menu-mobile';
+    const renderMobileMenu = (
+        <Menu
+            anchorEl={mobileMoreAnchorEl}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            id={mobileMenuId}
+            keepMounted
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            open={isMobileMenuOpen}
+            onClose={handleMobileMenuClose}
+        >
+            <MenuItem>
+                <IconButton aria-label="show 4 new mails" color="inherit">
+                    <Badge badgeContent={4} color="secondary">
+                        <MailIcon />
+                    </Badge>
+                </IconButton>
+                <p>Messages</p>
+            </MenuItem>
+            <MenuItem>
+                <IconButton aria-label="show 11 new notifications" color="inherit">
+                    <Badge badgeContent={11} color="secondary">
+                        <NotificationsIcon />
+                    </Badge>
+                </IconButton>
+                <p>Notifications</p>
+            </MenuItem>
+            <MenuItem onClick={handleProfileMenuOpen}>
+                <IconButton
+                    aria-label="account of current user"
+                    aria-controls="primary-search-account-menu"
+                    aria-haspopup="true"
+                    color="inherit"
+                >
+                    <AccountCircle />
+                </IconButton>
+                <p>Profile</p>
+            </MenuItem>
+        </Menu>
+    );
 
     return (
         <div className={classes.root}>
-            <CssBaseline />
-            <AppBar position="fixed" className={classes.appBar}>
-                <Toolbar style={{ backgroundColor: "#674DA1" }}>
-                    <img src={drawerIcon} className="icon" />
-                    <Typography variant="h6" noWrap>
-                        ManagementApp
-                    </Typography>
+            <AppBar position="fixed"
+                className={clsx(classes.appBar, {
+                    [classes.appBarShift]: open,
+                })}>
+                <Toolbar>
+
+                    <IconButton
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={handleDrawerOpen}
+                        edge="start"
+                        className={clsx(classes.menuButton, open && classes.hide)}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Typography className={classes.title} variant="h6" noWrap>
+                        Teams
+          </Typography>
+                    <div className={classes.search}>
+                        <div className={classes.searchIcon}>
+                            <SearchIcon />
+                        </div>
+                        <InputBase
+                            placeholder="Search…"
+                            classes={{
+                                root: classes.inputRoot,
+                                input: classes.inputInput,
+                            }}
+                            inputProps={{ 'aria-label': 'search' }}
+                        />
+                    </div>
+                    <div className={classes.grow} />
+                    <div className={classes.sectionDesktop}>
+                        <IconButton aria-label="show 4 new mails" color="inherit">
+                            <Badge badgeContent={4} color="secondary">
+                                <MailIcon />
+                            </Badge>
+                        </IconButton>
+                        <IconButton aria-label="show 17 new notifications" color="inherit">
+                            <Badge badgeContent={17} color="secondary">
+                                <NotificationsIcon />
+                            </Badge>
+                        </IconButton>
+                        <IconButton
+                            edge="end"
+                            aria-label="account of current user"
+                            aria-controls={menuId}
+                            aria-haspopup="true"
+                            onClick={handleProfileMenuOpen}
+                            color="inherit"
+                        >
+                            <AccountCircle />
+                        </IconButton>
+                    </div>
+                    <div className={classes.sectionMobile}>
+                        <IconButton
+                            aria-label="show more"
+                            aria-controls={mobileMenuId}
+                            aria-haspopup="true"
+                            onClick={handleMobileMenuOpen}
+                            color="inherit"
+                        >
+                            <MoreIcon />
+                        </IconButton>
+                    </div>
                 </Toolbar>
             </AppBar>
             <Drawer
                 className={classes.drawer}
-                variant="permanent"
+                variant="persistent"
+                anchor="left"
+                open={open}
                 classes={{
                     paper: classes.drawerPaper,
                 }}
             >
-                <Toolbar />
-                <div className={classes.drawerContainer}>
-                    <List>
-                        <ListItem button>
-                            <ListItemIcon>
-                                <AccountCircleIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Profile" />
-                        </ListItem>
-                        <ListItem button>
-                            <ListItemIcon>
-                                <AnnouncementIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="News" />
-                        </ListItem>
-                        <ListItem button>
-                            <ListItemIcon>
-                                <GroupIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="My Teams" />
-                        </ListItem>
-                        <ListItem button>
-                            <ListItemIcon>
-                                <AccountTreeIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Projects" />
-                        </ListItem>
-                        <ListItem button>
-                            <ListItemIcon>
-                                <AssignmentIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Board" />
-                        </ListItem>
-                    </List>
-                    <Divider />
-                    <List style={{ margin: "15px 15px" }}>
-                        <Logout />
-                    </List>
+                <div className={classes.drawerHeader}>
+                    <div className="logo">
+                        <img src={drawerIcon} alt="Check it out" className="icon" />
+                    </div>
+                    <IconButton onClick={handleDrawerClose}>
+                        {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                    </IconButton>
                 </div>
+                <Divider />
+                <List>
+                    <ListItem button>
+                        <ListItemIcon>
+                            <AnnouncementIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="News" />
+                    </ListItem>
+                    <ListItem button>
+                        <ListItemIcon>
+                            <GroupIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="My Teams" />
+                    </ListItem>
+                    <ListItem button>
+                        <ListItemIcon>
+                            <AccountTreeIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Projects" />
+                    </ListItem>
+                    <ListItem button>
+                        <ListItemIcon>
+                            <AssignmentIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Board" />
+                    </ListItem>
+                </List>
+                <Divider />
             </Drawer>
-            <main className={classes.content}>
-                <Toolbar />
-                <Typography paragraph>
-                    Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper eget nulla
-                    facilisi etiam dignissim diam. Pulvinar elementum integer enim neque volutpat ac
-                    tincidunt. Ornare suspendisse sed nisi lacus sed viverra tellus. Purus sit amet volutpat
-                    consequat mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis risus sed
-                    vulputate odio. Morbi tincidunt ornare massa eget egestas purus viverra accumsan in. In
-                    hendrerit gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem et
-                    tortor. Habitant morbi tristique senectus et. Adipiscing elit duis tristique sollicitudin
-                    nibh sit. Ornare aenean euismod elementum nisi quis eleifend. Commodo viverra maecenas
-                    accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam ultrices sagittis orci a.
-                </Typography>
-            </main>
-        </div >
+
+            {renderMobileMenu}
+            {renderMenu}
+        </div>
     );
-};
+}

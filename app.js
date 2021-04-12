@@ -5,9 +5,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-const teamRouter = require('./routes/teams');
+const teamsRouter = require('./routes/teams');
 const authRouter = require('./routes/auth');
 const usersRouter = require('./routes/users');
+const notificationsRouter = require('./routes/notifications');
 const cors = require('cors');
 
 require('dotenv/config');
@@ -17,7 +18,7 @@ var app = express();
 mongoose.connect(
   process.env.DB_CONNECTION,
   { useNewUrlParser: true, useUnifiedTopology: true },
-  () => console.log('connected to DB!')
+  (err) => err == null ? console.log('Connected to DB') : console.log(err)
 );
 
 // view engine setup
@@ -33,15 +34,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
-app.use('/teams', teamRouter);
+app.use('/teams', teamsRouter);
+app.use('/notifications', notificationsRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

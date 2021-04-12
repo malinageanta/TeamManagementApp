@@ -1,5 +1,4 @@
 export const GET_USERS = "GET_USERS";
-export const USERS_LOADING = "USERS_LOADING";
 export const USER_LOADING = "USER_LOADING";
 export const USER_LOADED = "USER_LOADED";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
@@ -10,3 +9,15 @@ export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 export const REGISTER_FAIL = "REGISTER_FAIL";
 export const GET_ERRORS = "GET_ERRORS";
 export const CLEAR_ERRORS = "CLEAR_ERRORS";
+export const SET_ROLE = "SET_ROLE";
+export const GET_ROLE = "GET_ROLE";
+export const CREATE_TEAM = "CREATE_TEAM";
+export const DELETE_TEAM = "DELETE_TEAM";
+export const SET_TEAM = "SET_TEAM";
+export const GET_TEAM = "GET_TEAM";
+export const ADD_MEMBER = "ADD_MEMBER";
+export const DELETE_MEMBER = "DELETE_MEMBER";
+export const SEND_INVITATION = "SEND_INVITATION";
+export const RECEIVE_NOTIFICATION = "RECEIVE_NOTIFICATION";
+export const NOTIFICATION_STATE = "NOTIFICATION_STATE";
+
