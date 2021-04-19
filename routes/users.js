@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const auth = require('../middleware/auth');
+var mongoose = require('mongoose');
+
 
 require('dotenv/config');
 
@@ -20,7 +22,7 @@ router.get('/', auth, async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const { firstName, lastName, email, password, role, team } = req.body;
+    const { firstName, lastName, email, password, role, team, photo } = req.body;
     if (!firstName || !lastName || !email || !password) {
       return res.status(400).json({ msg: 'Please enter all fields.' });
     }
@@ -32,9 +34,7 @@ router.post('/', async (req, res) => {
           firstName,
           lastName,
           email,
-          password,
-          role,
-          team
+          password
         });
         // Create salt & hash
         bcrypt.genSalt(10, (err, salt) => {
@@ -57,7 +57,8 @@ router.post('/', async (req, res) => {
                         lastName: user.lastName,
                         email: user.email,
                         role: user.role,
-                        team: user.team
+                        team: user.team,
+                        photo: user.photo
                       }
                     });
                   });
@@ -73,18 +74,15 @@ router.post('/', async (req, res) => {
 router.patch('/:id', auth, async (req, res) => {
   try {
     var updatedUser = null;
-    if (req.body?.team) {
-      updatedUser = await User.updateOne(
-        { _id: req.params.id },
-        { $set: { team: req.body.team } }
-      )
-    }
-    else if (req.body?.role) {
-      updatedUser = await User.updateOne(
-        { _id: req.params.id },
-        { $set: { role: req.body.role } }
-      )
-    }
+    var itemToBeUpdated = req.query.itemToBeUpdated;
+    var $set = {};
+    $set[itemToBeUpdated] = req.body.newItem;
+    // if (mongoose.Types.ObjectId(req.params.id)) {
+    updatedUser = await User.findOneAndUpdate(
+      { _id: req.params.id },
+      { $set: $set },
+      { new: true }
+    )
     if (updatedUser) {
       res.json(updatedUser);
     }
@@ -92,6 +90,10 @@ router.patch('/:id', auth, async (req, res) => {
       res.status(400).json({ msg: "No user updated!" });
     }
   }
+  // else {
+  //   res.status(400).json({ msg: "User ID undefined" });
+  // }
+  // }
   catch (err) {
     res.send('Error: ' + err);
   }

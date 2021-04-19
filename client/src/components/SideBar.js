@@ -1,5 +1,5 @@
 import React from 'react';
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { fade, makeStyles, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -15,7 +15,6 @@ import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import clsx from 'clsx';
-import { useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -28,9 +27,11 @@ import GroupIcon from '@material-ui/icons/Group';
 import AnnouncementIcon from '@material-ui/icons/Announcement';
 import AccountTreeIcon from '@material-ui/icons/AccountTree';
 import AssignmentIcon from '@material-ui/icons/Assignment';
-import drawerIcon from '../images/team_work.jpg';
+import { Button } from 'react-bootstrap';
+
 import '../css/Drawer.css';
 import Logout from './auth/Logout';
+import UploadForm from './profile/UploadForm';
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -148,7 +149,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function PrimarySearchAppBar() {
+export default function PrimarySearchAppBar(props) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -188,6 +189,12 @@ export default function PrimarySearchAppBar() {
     const handleMobileMenuOpen = (event) => {
         setMobileMoreAnchorEl(event.currentTarget);
     };
+
+    const renderChild = (childId) =>
+        props.children.map(child => {
+            return (child.props.id === childId ? child : null)
+        })
+
 
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
@@ -318,6 +325,8 @@ export default function PrimarySearchAppBar() {
                         </IconButton>
                     </div>
                 </Toolbar>
+                {renderChild("button")}
+
             </AppBar>
             <Drawer
                 className={classes.drawer}
@@ -329,9 +338,9 @@ export default function PrimarySearchAppBar() {
                 }}
             >
                 <div className={classes.drawerHeader}>
-                    <div className="logo">
-                        <img src={drawerIcon} alt="Check it out" className="icon" />
-                    </div>
+                    {/* <img src={drawerIcon} alt="Check it out" className="icon" /> */}
+                    {renderChild("image")}
+                    {/* <UploadForm /> */}
                     <IconButton onClick={handleDrawerClose}>
                         {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                     </IconButton>

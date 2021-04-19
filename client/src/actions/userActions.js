@@ -11,8 +11,7 @@ import {
     REGISTER_SUCCESS,
     REGISTER_FAIL,
     GET_USERS,
-    SET_ROLE,
-    SET_TEAM
+    SET_ITEM
 } from './types';
 
 export const loadUser = () => (dispatch, getState) => {
@@ -45,14 +44,14 @@ export const tokenConfig = getState => {
     return config;
 };
 
-export const register = ({ firstName, lastName, email, password, role, team }) => dispatch => {
+export const register = ({ firstName, lastName, email, password, role, team, photo }) => dispatch => {
     const config = {
         headers: {
             "Content-type": "application/json"
         }
     };
 
-    const body = { firstName, lastName, email, password, role, team };
+    const body = { firstName, lastName, email, password, role, team, photo };
 
     axios.post('/users', body, config)
         .then(res => dispatch({
@@ -70,14 +69,14 @@ export const register = ({ firstName, lastName, email, password, role, team }) =
         });
 };
 
-export const login = ({ email, password, role, team }) => dispatch => {
+export const login = ({ email, password, role, team, photo }) => dispatch => {
     const config = {
         headers: {
             "Content-type": "application/json"
         }
     };
 
-    const body = JSON.stringify({ email, password, role, team });
+    const body = JSON.stringify({ email, password, role, team, photo });
 
     axios.post('/auth', body, config)
         .then(res => dispatch({
@@ -109,23 +108,29 @@ export const getUsers = () => dispatch => {
         );
 };
 
-export const setUserRole = (_id, user) => (dispatch, getState) => {
-    axios.patch(`/users/${_id}`, user, tokenConfig(getState))
-        .then(res =>
+export const setUserItem = (_id, itemToBeUpdated, newItem) => (dispatch, getState) => {
+    let config = {
+        headers: (tokenConfig(getState)).headers,
+        params: {
+            itemToBeUpdated: itemToBeUpdated
+        }
+    }
+    axios.patch(`/users/${_id}`, { newItem }, config)
+        .then(res => {
+            console.log(res)
             dispatch({
-                type: SET_ROLE,
+                type: SET_ITEM,
                 payload: res.data
             })
-        );
-}
-
-export const setUserTeam = (_id, user) => (dispatch, getState) => {
-    axios.patch(`/users/${_id}`, user, tokenConfig(getState))
-        .then(res =>
-            dispatch({
-                type: SET_TEAM,
-                payload: res.data
-            })
-        );
+        })
+        .catch(error => {
+            dispatch(
+                returnErrors(
+                    error.response.data,
+                    error.response.status,
+                    'LOGIN_FAIL'
+                ));
+            dispatch({ type: LOGIN_FAIL });
+        });
 }
 

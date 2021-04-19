@@ -8,8 +8,7 @@ import {
     REGISTER_SUCCESS,
     REGISTER_FAIL,
     GET_USERS,
-    SET_ROLE,
-    SET_TEAM
+    SET_ITEM
 } from '../actions/types';
 
 const initState = {
@@ -62,16 +61,11 @@ const userReducer = (state = initState, action) => {
                 isAuthenticated: false,
                 userIsLoading: false
             };
-        case SET_ROLE:
+        case SET_ITEM:
+            console.log(action.payload)
             return {
                 ...state,
-                ...action.payload
-
-            }
-        case SET_TEAM:
-            return {
-                ...state,
-                ...action.payload
+                user: action.payload
             }
         default:
             return state;

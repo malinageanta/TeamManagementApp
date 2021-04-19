@@ -1,0 +1,7 @@
+.btn-info, .btn-info:hover, .btn-info:active, .btn-info:visited {
+    background-color: #674DA1 !important;
+}
+
+.btn-danger, .btn-danger:hover, .btn-danger:active, .btn-danger:visited {
+    background-color: #EB5B75 !important;
+}

@@ -18,8 +18,8 @@ class Registration extends Component {
             email: '',
             password: '',
             repeatedPassword: '',
-            role: { name: 'basic', permissions: '' },
-            team: "",
+            role: '',
+            team: '',
             errorMsg: null
         };
         this.handleSubmit = this.handleSubmit.bind(this);

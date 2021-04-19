@@ -16,8 +16,9 @@ class Registration extends Component {
         this.state = {
             email: '',
             password: '',
-            role: { name: 'basic', permissions: '' },
-            team: "",
+            role: '',
+            team: '',
+            photo: '',
             errorMsg: null
         };
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -32,12 +33,13 @@ class Registration extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const { email, password, role, team } = this.state;
+        const { email, password, role, team, photo } = this.state;
         const user = {
             email,
             password,
             role,
-            team
+            team,
+            photo
         };
 
         this.props.login(user);

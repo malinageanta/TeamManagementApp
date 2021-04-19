@@ -10,7 +10,7 @@ require('dotenv/config');
 
 router.post('/', async (req, res) => {
   try {
-    const { email, password, role, team } = req.body;
+    const { email, password, role, team, photo } = req.body;
     if (!email || !password) {
       return res.status(400).json({ msg: 'Please enter all fields.' });
     }
@@ -36,7 +36,8 @@ router.post('/', async (req, res) => {
                     lastName: user.lastName,
                     email: user.email,
                     role: user.role,
-                    team: user.team
+                    team: user.team,
+                    photo: user.photo
                   }
                 });
               });

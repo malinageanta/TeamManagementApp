@@ -19,12 +19,16 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     role: {
-        type: Object,
-        default: 'basic',
-        required: true
+        type: String,
+        default: 'basic'
     },
     team: {
-        type: String
+        type: String,
+        default: ''
+    },
+    photo: {
+        type: String,
+        default: null
     }
 });
 
