@@ -7,6 +7,8 @@ import { setUserItem } from '../actions/userActions';
 import { getUserTeam, createTeam } from '../actions/teamActions';
 import { sendInvitation, getInvitation, updateInvitationState, deleteInvitation } from '../actions/invitationActions';
 import { Avatar } from '@material-ui/core';
+import '../css/Drawer.css';
+
 
 
 class Dashboard extends Component {
@@ -50,10 +52,12 @@ class Dashboard extends Component {
     render() {
         let image = null;
         if (this.props.user.photo) {
-            image = <Avatar alt='user_photo' src={`${this.props.user.photo}`} id="image" />;
+            image = <Avatar alt='user_photo' src={`${this.props.user.photo}`} id="image" className="icon" />;
         }
         else {
-            image = 'Nothing uploaded yet!';
+            const first = ((this.props.user.firstName).charAt(0)).toUpperCase();
+            const last = ((this.props.user.lastName).charAt(0)).toUpperCase();
+            image = <Avatar id="image" className="icon-default">{first + last}</Avatar>
         }
         return (
             <div>

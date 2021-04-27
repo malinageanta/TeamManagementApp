@@ -1,5 +1,29 @@
 .icon {
-  max-height: 54px;
+  display:block;
+  margin:auto;
+  width: 90px !important;
+  height: 90px !important;
+  margin-top:9px;
+}
+
+.icon-default {
+  display:block;
+  margin:auto;
+  width: 90px !important;
+  height: 90px !important;
+  margin-top:9px;
+  font-size: 39px !important;
+  background-color: #F50057 !important;
+}
+.center {
+  margin: auto;
+  width: 50%;
+  height: 50%;
+  font-size: small;
+}
+
+.change-pic {
+  padding: 24px;
 }
 
 .logo {

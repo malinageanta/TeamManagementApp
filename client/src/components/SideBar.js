@@ -18,8 +18,6 @@ import clsx from 'clsx';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -27,13 +25,12 @@ import GroupIcon from '@material-ui/icons/Group';
 import AnnouncementIcon from '@material-ui/icons/Announcement';
 import AccountTreeIcon from '@material-ui/icons/AccountTree';
 import AssignmentIcon from '@material-ui/icons/Assignment';
-import { Button } from 'react-bootstrap';
 
 import '../css/Drawer.css';
 import Logout from './auth/Logout';
 import UploadForm from './profile/UploadForm';
 
-const drawerWidth = 240;
+const drawerWidth = 258;
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
@@ -192,7 +189,7 @@ export default function PrimarySearchAppBar(props) {
 
     const renderChild = (childId) =>
         props.children.map(child => {
-            return (child.props.id === childId ? child : null)
+            return (child.props?.id === childId ? child : null)
         })
 
 
@@ -268,9 +265,12 @@ export default function PrimarySearchAppBar(props) {
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
-                        onClick={handleDrawerOpen}
+                        onClick=
+                        {
+                            open === true ? handleDrawerClose : handleDrawerOpen
+                        }
                         edge="start"
-                        className={clsx(classes.menuButton, open && classes.hide)}
+                        className={clsx(classes.menuButton, false)}
                     >
                         <MenuIcon />
                     </IconButton>
@@ -338,12 +338,10 @@ export default function PrimarySearchAppBar(props) {
                 }}
             >
                 <div className={classes.drawerHeader}>
-                    {/* <img src={drawerIcon} alt="Check it out" className="icon" /> */}
                     {renderChild("image")}
-                    {/* <UploadForm /> */}
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-                    </IconButton>
+                </div>
+                <div>
+                    {<UploadForm />}
                 </div>
                 <Divider />
                 <List>

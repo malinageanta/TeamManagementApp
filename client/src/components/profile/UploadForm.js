@@ -3,6 +3,8 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { setUserItem } from '../../actions/userActions';
 import Resizer from "react-image-file-resizer";
+import Link from '@material-ui/core/Link';
+import '../../css/Drawer.css';
 
 
 class UploadForm extends Component {
@@ -17,20 +19,9 @@ class UploadForm extends Component {
             Resizer.imageFileResizer(file, 100, 100, 'PNG', 100, 0,
                 uri => {
                     resolve(uri);
-                }, 'base64', 50, 50);
+                }, 'base64', 100, 100);
         });
     }
-
-    // getBase64(file, cb) {
-    //     let reader = new FileReader();
-    //     reader.readAsDataURL(file);
-    //     reader.onload = function () {
-    //         cb(reader.result)
-    //     };
-    //     reader.onerror = function (error) {
-    //         console.log('Error: ', error);
-    //     };
-    // }
 
     async changeHandler(e) {
         try {
@@ -51,9 +42,14 @@ class UploadForm extends Component {
 
     render() {
         return (
-            <form>
-                <input type="file" onChange={this.changeHandler} />
-            </form >
+            <div className="center">
+                <input type="file" accept=".jpg,.jpeg,.png" style={{ display: "none" }} id="icon-button-file" onChange={this.changeHandler} />
+                <label htmlFor="icon-button-file">
+                    <Link>
+                        Change profile picture
+                    </Link>
+                </label>
+            </div>
         )
     }
 }
