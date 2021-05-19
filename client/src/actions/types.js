@@ -9,15 +9,23 @@ export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 export const REGISTER_FAIL = "REGISTER_FAIL";
 export const GET_ERRORS = "GET_ERRORS";
 export const CLEAR_ERRORS = "CLEAR_ERRORS";
-export const SET_ITEM = "SET_ITEM";
+export const SET_USER_ITEM = "SET_USER_ITEM";
+export const SET_USER_ITEM_FAIL = "SET_USER_ITEM_FAIL";
 export const GET_ROLE = "GET_ROLE";
 export const CREATE_TEAM = "CREATE_TEAM";
+export const CREATE_TEAM_FAIL = "CREATE_TEAM_FAIL";
 export const DELETE_TEAM = "DELETE_TEAM";
 export const GET_TEAM = "GET_TEAM";
+export const SET_TEAM_ITEM = "SET_TEAM_ITEM";
 export const ADD_MEMBER = "ADD_MEMBER";
 export const DELETE_MEMBER = "DELETE_MEMBER";
 export const SEND_INVITATION = "SEND_INVITATION";
 export const GET_INVITATION = "GET_INVITATION";
 export const UPDATE_INVITATION_STATE = "UPDATE_INVITATION_STATE";
 export const DELETE_INVITATION = "DELETE_INVITATION";
+export const TEAM_LOADING = "TEAM_LOADING";
+export const TEAM_LOADED = "TEAM_LOADED";
+export const GET_TEAM_FAIL = "GET_TEAM_FAIL";
+
+
 

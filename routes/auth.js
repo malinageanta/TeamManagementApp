@@ -22,23 +22,16 @@ router.post('/', async (req, res) => {
         bcrypt.compare(password, user.password)
           .then(isMatch => {
             if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
+            delete user.password;
             jwt.sign(
-              { id: user.id },
+              { _id: user._id },
               process.env.JWT_SECRET,
               { expiresIn: 6000 },
               (err, token) => {
                 if (err) throw err;
                 res.json({
                   token,
-                  user: {
-                    id: user.id,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    email: user.email,
-                    role: user.role,
-                    team: user.team,
-                    photo: user.photo
-                  }
+                  user
                 });
               });
           });
@@ -50,9 +43,13 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/user', auth, (req, res) => {
-  User.findById(req.user.id)
+  User.findById(req.user._id)
     .select('-password')
-    .then(user => res.json(user));
+    .then(user => {
+      return res.json(user);
+    });
+
+
 });
 
 module.exports = router;

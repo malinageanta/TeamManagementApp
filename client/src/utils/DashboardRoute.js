@@ -2,9 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
 
-export const PrivateRoute = ({
+export const DashboardRoute = ({
     isAuthenticated,
     userIsLoading,
+    user,
     component: Component,
     ...rest
 }) => (
@@ -12,10 +13,14 @@ export const PrivateRoute = ({
         if (userIsLoading === true)
             return null;
         else if (isAuthenticated) {
-            return (
-                <div>
+            if (user.team) {
+                return (<div>
                     <Component {...props} />
                 </div>)
+            }
+            else {
+                return (<Redirect to="/addTeam" />)
+            }
         } else {
             return (<Redirect to="/" />)
         }
@@ -26,8 +31,9 @@ export const PrivateRoute = ({
 const mapStateToProps = (state) => {
     return {
         isAuthenticated: state.user.isAuthenticated,
-        userIsLoading: state.user.userIsLoading
+        userIsLoading: state.user.userIsLoading,
+        user: state.user.user
     }
 }
 
-export default connect(mapStateToProps)(PrivateRoute);
+export default connect(mapStateToProps)(DashboardRoute);

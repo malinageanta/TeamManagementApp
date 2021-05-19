@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { returnErrors } from './errorsActions';
+import { getUserTeam } from './teamActions';
 
 import {
     USER_LOADED,
@@ -11,21 +12,26 @@ import {
     REGISTER_SUCCESS,
     REGISTER_FAIL,
     GET_USERS,
-    SET_ITEM
+    SET_USER_ITEM,
 } from './types';
 
 export const loadUser = () => (dispatch, getState) => {
     dispatch({ type: USER_LOADING });
 
     axios.get('/auth/user', tokenConfig(getState))
-        .then(res => dispatch({
-            type: USER_LOADED,
-            payload: res.data
-        }))
+        .then(res => {
+            dispatch({
+                type: USER_LOADED,
+                payload: res.data
+            })
+            dispatch(getUserTeam(res.data.team));
+        })
         .catch(error => {
+            console.error(error)
             dispatch(returnErrors(error.response.data, error.response.status));
             dispatch({ type: AUTH_ERROR })
         });
+
 };
 
 export const tokenConfig = getState => {
@@ -84,6 +90,7 @@ export const login = ({ email, password, role, team, photo }) => dispatch => {
             payload: res.data
         }))
         .catch(error => {
+            console.log(error)
             dispatch(
                 returnErrors(
                     error.response.data,
@@ -117,20 +124,11 @@ export const setUserItem = (_id, itemToBeUpdated, newItem) => (dispatch, getStat
     }
     axios.patch(`/users/${_id}`, { newItem }, config)
         .then(res => {
-            console.log(res)
+            console.log(res.data)
             dispatch({
-                type: SET_ITEM,
+                type: SET_USER_ITEM,
                 payload: res.data
             })
         })
-        .catch(error => {
-            dispatch(
-                returnErrors(
-                    error.response.data,
-                    error.response.status,
-                    'LOGIN_FAIL'
-                ));
-            dispatch({ type: LOGIN_FAIL });
-        });
 }
 

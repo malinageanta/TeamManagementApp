@@ -51,10 +51,10 @@ class Dashboard extends Component {
 
     render() {
         let image = null;
-        if (this.props.user.photo) {
-            image = <Avatar alt='user_photo' src={`${this.props.user.photo}`} id="image" className="icon" />;
+        if (this.props.user?.photo) {
+            image = <Avatar alt='user_photo' src={`${this.props.user?.photo}`} id="image" className="icon" />;
         }
-        else {
+        else if (this.props.user) {
             const first = ((this.props.user.firstName).charAt(0)).toUpperCase();
             const last = ((this.props.user.lastName).charAt(0)).toUpperCase();
             image = <Avatar id="image" className="icon-default">{first + last}</Avatar>

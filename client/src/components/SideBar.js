@@ -25,10 +25,15 @@ import GroupIcon from '@material-ui/icons/Group';
 import AnnouncementIcon from '@material-ui/icons/Announcement';
 import AccountTreeIcon from '@material-ui/icons/AccountTree';
 import AssignmentIcon from '@material-ui/icons/Assignment';
-
 import '../css/Drawer.css';
 import Logout from './auth/Logout';
 import UploadForm from './profile/UploadForm';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { Avatar } from '@material-ui/core';
+import { Button } from 'react-bootstrap';
+
+
 
 const drawerWidth = 258;
 const useStyles = makeStyles((theme) => ({
@@ -146,7 +151,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function PrimarySearchAppBar(props) {
+function PrimarySearchAppBar(props) {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -189,9 +194,18 @@ export default function PrimarySearchAppBar(props) {
 
     const renderChild = (childId) =>
         props.children.map(child => {
-            return (child.props?.id === childId ? child : null)
+            return (child.props.id === childId ? child : null)
         })
 
+    let image = null;
+    if (props.user?.photo) {
+        image = <Avatar alt='user_photo' src={`${props.user?.photo}`} id="image" className="icon" />;
+    }
+    else if (props.user) {
+        const first = ((props.user.firstName).charAt(0)).toUpperCase();
+        const last = ((props.user.lastName).charAt(0)).toUpperCase();
+        image = <Avatar id="image" className="icon-default">{first + last}</Avatar>
+    }
 
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
@@ -325,7 +339,7 @@ export default function PrimarySearchAppBar(props) {
                         </IconButton>
                     </div>
                 </Toolbar>
-                {renderChild("button")}
+                {/* <Button variant="info" style={{ height: "200px" }} id="button">Create Team</Button> */}
 
             </AppBar>
             <Drawer
@@ -338,7 +352,7 @@ export default function PrimarySearchAppBar(props) {
                 }}
             >
                 <div className={classes.drawerHeader}>
-                    {renderChild("image")}
+                    {image}
                 </div>
                 <div>
                     {<UploadForm />}
@@ -351,11 +365,11 @@ export default function PrimarySearchAppBar(props) {
                         </ListItemIcon>
                         <ListItemText primary="News" />
                     </ListItem>
-                    <ListItem button>
+                    <ListItem button component={Link} to="/members">
                         <ListItemIcon>
                             <GroupIcon />
                         </ListItemIcon>
-                        <ListItemText primary="My Teams" />
+                        <ListItemText primary="My Team" />
                     </ListItem>
                     <ListItem button>
                         <ListItemIcon>
@@ -378,3 +392,9 @@ export default function PrimarySearchAppBar(props) {
         </div>
     );
 }
+
+const mapStateToProps = state => ({
+    user: state.user.user
+});
+
+export default connect(mapStateToProps)(PrimarySearchAppBar);

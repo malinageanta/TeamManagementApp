@@ -7,8 +7,7 @@ import {
     LOGOUT_SUCCESS,
     REGISTER_SUCCESS,
     REGISTER_FAIL,
-    GET_USERS,
-    SET_ITEM
+    SET_USER_ITEM
 } from '../actions/types';
 
 const initState = {
@@ -16,18 +15,11 @@ const initState = {
     isAuthenticated: null,
     userIsLoading: false,
     user: null,
-    allUsers: [],
     allUsersLoading: false
 };
 
 const userReducer = (state = initState, action) => {
     switch (action.type) {
-        case GET_USERS:
-            return {
-                ...state,
-                allUsers: action.payload,
-                loading: false
-            };
         case USER_LOADING:
             return {
                 ...state,
@@ -61,8 +53,7 @@ const userReducer = (state = initState, action) => {
                 isAuthenticated: false,
                 userIsLoading: false
             };
-        case SET_ITEM:
-            console.log(action.payload)
+        case SET_USER_ITEM:
             return {
                 ...state,
                 user: action.payload

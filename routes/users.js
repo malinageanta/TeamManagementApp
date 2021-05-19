@@ -9,16 +9,6 @@ var mongoose = require('mongoose');
 
 require('dotenv/config');
 
-/* GET users listing. */
-router.get('/', auth, async (req, res) => {
-  try {
-    const users = await User.find();
-    res.json(users);
-  }
-  catch (err) {
-    res.send('Error: ' + err);
-  }
-});
 
 router.post('/', async (req, res) => {
   try {
@@ -43,23 +33,16 @@ router.post('/', async (req, res) => {
             newUser.password = hash;
             newUser.save()
               .then(user => {
+                delete user.password;
                 jwt.sign(
-                  { id: user.id },
+                  { _id: user._id },
                   process.env.JWT_SECRET,
                   { expiresIn: 3600 },
                   (err, token) => {
                     if (err) throw err;
                     res.json({
                       token,
-                      user: {
-                        id: user.id,
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-                        email: user.email,
-                        role: user.role,
-                        team: user.team,
-                        photo: user.photo
-                      }
+                      user
                     });
                   });
               });
@@ -73,27 +56,23 @@ router.post('/', async (req, res) => {
 
 router.patch('/:id', auth, async (req, res) => {
   try {
+    if (!req.body.newItem) {
+      return res.status(400).json({ msg: 'No value received!' });
+    }
     var updatedUser = null;
     var itemToBeUpdated = req.query.itemToBeUpdated;
     var $set = {};
     $set[itemToBeUpdated] = req.body.newItem;
-    // if (mongoose.Types.ObjectId(req.params.id)) {
     updatedUser = await User.findOneAndUpdate(
       { _id: req.params.id },
       { $set: $set },
       { new: true }
     )
+    delete updatedUser.password;
     if (updatedUser) {
-      res.json(updatedUser);
-    }
-    else {
-      res.status(400).json({ msg: "No user updated!" });
+      return res.json(updatedUser);
     }
   }
-  // else {
-  //   res.status(400).json({ msg: "User ID undefined" });
-  // }
-  // }
   catch (err) {
     res.send('Error: ' + err);
   }
