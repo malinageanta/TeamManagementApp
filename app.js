@@ -8,7 +8,7 @@ var logger = require('morgan');
 const teamsRouter = require('./routes/teams');
 const authRouter = require('./routes/auth');
 const usersRouter = require('./routes/users');
-const invitationsRouter = require('./routes/invitations');
+const tasksRouter = require('./routes/tasks');
 const cors = require('cors');
 
 require('dotenv/config');
@@ -35,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
 app.use('/teams', teamsRouter);
-app.use('/invitations', invitationsRouter);
+app.use('/tasks', tasksRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

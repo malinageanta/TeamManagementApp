@@ -10,11 +10,12 @@ import Dashboard from './components/Dashboard';
 import { Router } from 'react-router-dom';
 import PrivateRoute from './utils/PrivateRoute';
 import AuthRoute from './utils/AuthRoute';
-import DashboardRoute from './utils/DashboardRoute';
 import AddTeam from './components/team/AddTeam';
 import CreateTeam from './components/team/CreateTeam';
 import JoinTeam from './components/team/JoinTeam';
 import Members from './components/team/Members';
+import AddTeamRoute from './utils/AddTeamRoute';
+import Tasks from './components/tasks/Tasks';
 
 
 export const history = createBrowserHistory();
@@ -25,17 +26,18 @@ class App extends Component {
     this.props.loadUser();
   }
 
+
   render() {
     return (
       <Router history={history}>
         <AuthRoute path="/registration" component={Registration} />
         <AuthRoute path="/" exact component={Login} />
-        <DashboardRoute path="/dashboard" component={Dashboard} />
-        <PrivateRoute path="/addTeam" component={AddTeam} />
-        <PrivateRoute path="/createTeam" component={CreateTeam} />
-        <PrivateRoute path="/joinTeam" component={JoinTeam} />
+        <PrivateRoute path="/dashboard" component={Dashboard} />
+        <AddTeamRoute path="/addTeam" component={AddTeam} />
+        <AddTeamRoute path="/createTeam" component={CreateTeam} />
+        <AddTeamRoute path="/joinTeam" component={JoinTeam} />
         <PrivateRoute path="/members" component={Members} />
-
+        <PrivateRoute path="/tasks" component={Tasks} />
       </Router>
     );
   }

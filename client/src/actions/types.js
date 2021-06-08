@@ -1,4 +1,3 @@
-export const GET_USERS = "GET_USERS";
 export const USER_LOADING = "USER_LOADING";
 export const USER_LOADED = "USER_LOADED";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
@@ -17,15 +16,12 @@ export const CREATE_TEAM_FAIL = "CREATE_TEAM_FAIL";
 export const DELETE_TEAM = "DELETE_TEAM";
 export const GET_TEAM = "GET_TEAM";
 export const SET_TEAM_ITEM = "SET_TEAM_ITEM";
-export const ADD_MEMBER = "ADD_MEMBER";
-export const DELETE_MEMBER = "DELETE_MEMBER";
-export const SEND_INVITATION = "SEND_INVITATION";
-export const GET_INVITATION = "GET_INVITATION";
-export const UPDATE_INVITATION_STATE = "UPDATE_INVITATION_STATE";
-export const DELETE_INVITATION = "DELETE_INVITATION";
 export const TEAM_LOADING = "TEAM_LOADING";
 export const TEAM_LOADED = "TEAM_LOADED";
 export const GET_TEAM_FAIL = "GET_TEAM_FAIL";
-
+export const GET_TEAM_TASKS = "GET_TEAM_TASKS";
+export const GET_TEAM_TASKS_FAIL = "GET_TEAM_TASKS_FAIL";
+export const CREATE_TASK_FAIL = "CREATE_TASK_FAIL";
+export const DELETE_TASK_FAIL = "DELETE_TASK_FAIL";
 
 

@@ -3,17 +3,18 @@ var mongoose = require('mongoose');
 const taskSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     priority: {
-        type: string,
+        type: String,
         required: true
     },
     description: {
         type: String
     },
     status: {
-        type: string,
+        type: String,
         required: true
     },
     assignee: {

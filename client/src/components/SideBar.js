@@ -22,7 +22,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import GroupIcon from '@material-ui/icons/Group';
-import AnnouncementIcon from '@material-ui/icons/Announcement';
+import HomeIcon from '@material-ui/icons/Home';
 import AccountTreeIcon from '@material-ui/icons/AccountTree';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import '../css/Drawer.css';
@@ -31,8 +31,6 @@ import UploadForm from './profile/UploadForm';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Avatar } from '@material-ui/core';
-import { Button } from 'react-bootstrap';
-
 
 
 const drawerWidth = 258;
@@ -159,7 +157,7 @@ function PrimarySearchAppBar(props) {
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = React.useState(true);
     const [showComponent, setShowComponent] = React.useState(false);
 
     const handleDrawerOpen = () => {
@@ -219,7 +217,7 @@ function PrimarySearchAppBar(props) {
             onClose={handleMenuClose}
         >
             <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            <MenuItem onClick={handleLogout} >Logout</MenuItem>
             {showComponent ?
                 <Logout /> :
                 null
@@ -359,11 +357,11 @@ function PrimarySearchAppBar(props) {
                 </div>
                 <Divider />
                 <List>
-                    <ListItem button>
+                    <ListItem button component={Link} to="/dashboard">
                         <ListItemIcon>
-                            <AnnouncementIcon />
+                            <HomeIcon />
                         </ListItemIcon>
-                        <ListItemText primary="News" />
+                        <ListItemText primary="Home" />
                     </ListItem>
                     <ListItem button component={Link} to="/members">
                         <ListItemIcon>
@@ -371,11 +369,11 @@ function PrimarySearchAppBar(props) {
                         </ListItemIcon>
                         <ListItemText primary="My Team" />
                     </ListItem>
-                    <ListItem button>
+                    <ListItem button component={Link} to="/tasks">
                         <ListItemIcon>
                             <AccountTreeIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Projects" />
+                        <ListItemText primary="Tasks" />
                     </ListItem>
                     <ListItem button>
                         <ListItemIcon>
@@ -386,7 +384,11 @@ function PrimarySearchAppBar(props) {
                 </List>
                 <Divider />
             </Drawer>
-
+            <main className={clsx(classes.content, {
+                [classes.contentShift]: open,
+            })}>
+                {props.children}
+            </main>
             {renderMobileMenu}
             {renderMenu}
         </div>

@@ -14,7 +14,8 @@ class CreateTeam extends Component {
 
         this.state = {
             goBack: false,
-            name: ''
+            name: '',
+            errorMsg: null
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -48,8 +49,8 @@ class CreateTeam extends Component {
 
         this.props.createTeam(newTeam)
             .then(() => {
-                this.props.setUserItem(id, 'team', name);
-                this.props.setUserItem(id, 'role', 'admin');
+                this.props.setUserItem(id, 'team', name, false);
+                this.props.setUserItem(id, 'role', 'admin', false);
             })
 
     }

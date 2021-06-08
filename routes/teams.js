@@ -2,13 +2,13 @@ var express = require('express');
 var router = express.Router();
 const Team = require('../models/team');
 const auth = require('../middleware/auth');
+const User = require('../models/user');
 
 
 router.get('/', auth, async (req, res) => {
   try {
     if (!req.query.team) return res.status(400).json({ msg: 'Field is empty!' });
     const teamName = { name: req.query.team };
-    console.log(teamName);
     Team.findOne(teamName)
       .then(team => {
         if (!team) return res.status(400).json({ msg: 'This team does not exist!' });
@@ -65,6 +65,44 @@ router.patch('/:id', auth, async (req, res) => {
   }
   catch (err) {
     res.send('Error: ' + err);
+  }
+});
+
+router.patch('/:teamId/deleteMember', auth, async (req, res) => {
+  try {
+    var team = await Team.findById(req.params.teamId);
+    await team.members.pull(req.body.memberId);
+    team.save();
+    res.status(202).send();
+  }
+  catch (error) {
+    res.status(500).send();
+  }
+});
+
+router.patch('/:teamId/addMember', auth, async (req, res) => {
+  try {
+    const newMember = req.body.memberId;
+    if (!newMember) return res.status(400).json({ msg: 'Field is empty!' });
+    var team = await Team.findById(req.params.teamId);
+    if (team.members.includes(newMember)) return res.status(400).json({ msg: 'This user is already a member in your team!' });
+
+    const user = await User.findOne({ email: newMember })
+    if (!user) return res.status(400).json({ msg: 'This user does not exist!' });
+    if (user.team) return res.status(400).json({ msg: 'This user is already a member in another team!' });
+
+    await team.members.push(newMember);
+    team.save();
+
+    await User.findOneAndUpdate(
+      { email: newMember },
+      { $set: { team: team.name } }
+    )
+
+    res.status(202).send();
+  }
+  catch (error) {
+    res.status(500).send();
   }
 });
 

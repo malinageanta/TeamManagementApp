@@ -1,8 +1,5 @@
 import {
     CREATE_TEAM,
-    DELETE_TEAM,
-    ADD_MEMBER,
-    DELETE_MEMBER,
     CREATE_TEAM_FAIL,
     SET_TEAM_ITEM,
     TEAM_LOADING,
@@ -35,15 +32,16 @@ const teamReducer = (state = initState, action) => {
                 team: action.payload
             }
         case CREATE_TEAM_FAIL:
-        case DELETE_TEAM:
         case GET_TEAM_FAIL:
+            return {
+                teamIsLoading: false,
+                team: null
+            }
         case SET_TEAM_ITEM:
             return {
                 ...state,
                 team: action.payload
             }
-        case ADD_MEMBER:
-        case DELETE_MEMBER:
         default:
             return state;
     }

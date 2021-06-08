@@ -11,8 +11,8 @@ import {
     LOGOUT_SUCCESS,
     REGISTER_SUCCESS,
     REGISTER_FAIL,
-    GET_USERS,
     SET_USER_ITEM,
+    GET_TEAM_FAIL
 } from './types';
 
 export const loadUser = () => (dispatch, getState) => {
@@ -27,9 +27,9 @@ export const loadUser = () => (dispatch, getState) => {
             dispatch(getUserTeam(res.data.team));
         })
         .catch(error => {
-            console.error(error)
-            dispatch(returnErrors(error.response.data, error.response.status));
+            dispatch(returnErrors(error?.response?.data, error?.response?.status));
             dispatch({ type: AUTH_ERROR })
+            dispatch({ type: GET_TEAM_FAIL })
         });
 
 };
@@ -60,10 +60,11 @@ export const register = ({ firstName, lastName, email, password, role, team, pho
     const body = { firstName, lastName, email, password, role, team, photo };
 
     axios.post('/users', body, config)
-        .then(res => dispatch({
-            type: REGISTER_SUCCESS,
-            payload: res.data
-        }))
+        .then(res => {
+            dispatch({ type: REGISTER_SUCCESS, payload: res.data });
+            console.log(res.data);
+            dispatch(getUserTeam(res.data.user.team));
+        })
         .catch(error => {
             dispatch(
                 returnErrors(
@@ -85,12 +86,11 @@ export const login = ({ email, password, role, team, photo }) => dispatch => {
     const body = JSON.stringify({ email, password, role, team, photo });
 
     axios.post('/auth', body, config)
-        .then(res => dispatch({
-            type: LOGIN_SUCCESS,
-            payload: res.data
-        }))
+        .then(res => {
+            dispatch({ type: LOGIN_SUCCESS, payload: res.data });
+            dispatch(getUserTeam(res.data.user.team));
+        })
         .catch(error => {
-            console.log(error)
             dispatch(
                 returnErrors(
                     error.response.data,
@@ -103,32 +103,24 @@ export const login = ({ email, password, role, team, photo }) => dispatch => {
 
 export const logout = () => dispatch => {
     dispatch({ type: LOGOUT_SUCCESS });
+    dispatch({ type: GET_TEAM_FAIL });
 }
 
-export const getUsers = () => dispatch => {
-    axios.get('/users')
-        .then(res =>
-            dispatch({
-                type: GET_USERS,
-                payload: res.data
-            })
-        );
-};
-
-export const setUserItem = (_id, itemToBeUpdated, newItem) => (dispatch, getState) => {
+export const setUserItem = (_id, itemToBeUpdated, newItem, isOtherUser) => (dispatch, getState) => {
     let config = {
         headers: (tokenConfig(getState)).headers,
         params: {
             itemToBeUpdated: itemToBeUpdated
         }
     }
-    axios.patch(`/users/${_id}`, { newItem }, config)
+    return axios.patch(`/users/${_id}`, { newItem }, config)
         .then(res => {
-            console.log(res.data)
-            dispatch({
-                type: SET_USER_ITEM,
-                payload: res.data
-            })
+            if (!isOtherUser) {
+                dispatch({
+                    type: SET_USER_ITEM,
+                    payload: res.data
+                })
+            }
         })
 }
 

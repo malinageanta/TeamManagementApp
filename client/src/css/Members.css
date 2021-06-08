@@ -1,0 +1,39 @@
+.member-icon-default {
+    font-size: 35px !important;
+    background-color: #F50057 !important;
+    width: 66px !important;
+    height: 66px !important;
+}
+
+.member-icon {
+    width: 66px !important;
+    height: 66px !important;
+}
+
+.member-card {
+    width: 300px !important;
+}
+
+.member-card-body {
+
+    text-align: -webkit-center;    
+
+}
+
+.member-card-footer {
+    text-align: right;
+}
+
+.btn-primary {
+    background-color: #3f51b5 !important;
+}
+
+.addMember .MuiSvgIcon-root {
+    font-size: 2.5rem !important;
+}
+
+.addMember {
+    height: 60px;
+    width: 60px;
+    top: 6px;
+}

@@ -69,10 +69,33 @@ export const setTeamItem = (_id, itemToBeUpdated, newItem) => (dispatch, getStat
     }
     axios.patch(`/teams/${_id}`, { newItem }, config)
         .then(res => {
-            console.log(res)
             dispatch({
                 type: SET_TEAM_ITEM,
                 payload: res.data
-            })
+            });
         })
+}
+
+export const deleteTeamMember = (teamId, teamName, member) => (dispatch, getState) => {
+    return axios.patch(`/teams/${teamId}/deleteMember`, { memberId: member }, tokenConfig(getState))
+        .then(() => {
+            dispatch(getUserTeam(teamName));
+        })
+}
+
+export const addTeamMember = (teamId, teamName, member) => async (dispatch, getState) => {
+    return axios.patch(`/teams/${teamId}/addMember`, { memberId: member }, tokenConfig(getState))
+        .then((res) => {
+            dispatch(getUserTeam(teamName));
+            return res;
+        })
+        .catch(error => {
+            dispatch(
+                returnErrors(
+                    error.response.data,
+                    error.response.status,
+                    'ADD_MEMBER_FAIL'
+                )
+            );
+        });
 }

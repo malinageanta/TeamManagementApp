@@ -9,6 +9,16 @@ var mongoose = require('mongoose');
 
 require('dotenv/config');
 
+router.get('/', async (req, res) => {
+  try {
+    const users = await User.find({ team: req.query.team });
+    res.json(users);
+  }
+  catch (err) {
+    res.send('Error: ' + err);
+  }
+});
+
 
 router.post('/', async (req, res) => {
   try {
@@ -56,7 +66,7 @@ router.post('/', async (req, res) => {
 
 router.patch('/:id', auth, async (req, res) => {
   try {
-    if (!req.body.newItem) {
+    if (req.body.newItem === undefined || req.body.newItem === null) {
       return res.status(400).json({ msg: 'No value received!' });
     }
     var updatedUser = null;

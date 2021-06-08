@@ -2,13 +2,13 @@ import { combineReducers } from 'redux';
 import userReducer from './userReducer';
 import errorReducer from './errorReducer';
 import teamReducer from './teamReducer';
-import invitationReducer from './invitationReducer';
+import taskReducer from './taskReducer';
 
 const rootReducer = combineReducers({
     user: userReducer,
     error: errorReducer,
     team: teamReducer,
-    invitation: invitationReducer
+    task: taskReducer
 });
 
 export default rootReducer;

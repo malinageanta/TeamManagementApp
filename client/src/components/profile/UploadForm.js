@@ -30,7 +30,7 @@ class UploadForm extends Component {
 
             const user = this.props.user;
             const itemToBeUpdated = 'photo';
-            this.props.setUserItem(user._id, itemToBeUpdated, resizedImage);
+            this.props.setUserItem(user._id, itemToBeUpdated, resizedImage, false);
 
 
         }

@@ -14,7 +14,8 @@ class JoinTeam extends Component {
 
         this.state = {
             goBack: false,
-            name: ''
+            name: '',
+            errorMsg: null
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -46,7 +47,7 @@ class JoinTeam extends Component {
                     const team_id = this.props.team._id;
                     const members = this.props.team.members;
                     members.push(newMember);
-                    this.props.setUserItem(user_id, 'team', name);
+                    this.props.setUserItem(user_id, 'team', name, false);
                     this.props.setTeamItem(team_id, 'members', members);
                 }
             })
