@@ -11,12 +11,10 @@ import { Router } from 'react-router-dom';
 import PrivateRoute from './utils/PrivateRoute';
 import AuthRoute from './utils/AuthRoute';
 import AddTeam from './components/team/AddTeam';
-import CreateTeam from './components/team/CreateTeam';
-import JoinTeam from './components/team/JoinTeam';
 import Members from './components/team/Members';
 import AddTeamRoute from './utils/AddTeamRoute';
 import Tasks from './components/tasks/Tasks';
-
+import AppBar from './components/AppBar';
 
 export const history = createBrowserHistory();
 
@@ -34,10 +32,10 @@ class App extends Component {
         <AuthRoute path="/" exact component={Login} />
         <PrivateRoute path="/dashboard" component={Dashboard} />
         <AddTeamRoute path="/addTeam" component={AddTeam} />
-        <AddTeamRoute path="/createTeam" component={CreateTeam} />
-        <AddTeamRoute path="/joinTeam" component={JoinTeam} />
         <PrivateRoute path="/members" component={Members} />
         <PrivateRoute path="/tasks" component={Tasks} />
+        <PrivateRoute path="/test" component={AppBar} />
+
       </Router>
     );
   }

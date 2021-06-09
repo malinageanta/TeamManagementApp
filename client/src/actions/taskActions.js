@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { returnErrors } from './errorsActions';
+import { clearErrors, returnErrors } from './errorsActions';
 import { tokenConfig } from './userActions';
 
 import {
@@ -21,6 +21,7 @@ export const getTeamTasks = (teamMembers) => (dispatch, getState) => {
                 type: GET_TEAM_TASKS,
                 payload: res.data
             })
+            dispatch(clearErrors());
             return res.data;
         })
         .catch(error => {
@@ -37,6 +38,7 @@ export const getTeamTasks = (teamMembers) => (dispatch, getState) => {
 export const createTask = (task) => (dispatch, getState) => {
     return axios.post('/tasks', task, tokenConfig(getState))
         .then(() => {
+            dispatch(clearErrors());
             dispatch(getTeamTasks(task.currentTeam.members));
         })
         .catch(error => {

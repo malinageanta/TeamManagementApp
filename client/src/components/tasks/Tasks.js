@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import SideBar from '../SideBar';
-import { IconButton, Avatar, Box, TextField } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import { getTeamTasks } from '../../actions/taskActions';
 import { Alert } from '@material-ui/lab';
 import { Card } from 'react-bootstrap';

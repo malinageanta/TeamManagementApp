@@ -14,9 +14,7 @@ export const AddTeamRoute = ({
             return null;
         else if (isAuthenticated) {
             return (
-                <div>
-                    <Component {...props} />
-                </div>)
+                <Component {...props} />)
         } else {
             return (<Redirect to="/" />)
         }

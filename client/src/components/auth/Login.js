@@ -3,11 +3,11 @@ import React, { Component } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { login } from '../../actions/userActions';
-import sideImage from '../../images/teamwork-and-team-building.png';
+import sideImage from '../../images/auth3.PNG';
 import '../../css/Authentication.css';
-import { Card } from '@material-ui/core';
-import { Alert } from '@material-ui/lab'
-import { Link } from 'react-router-dom'
+import { Card, Box } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
+import { Link } from 'react-router-dom';
 
 
 class Registration extends Component {
@@ -74,26 +74,26 @@ class Registration extends Component {
                 <div className="split left">
                     <div className="centered">
                         <h1 className="auth-header">Login</h1>
-                        <Card className="auth-card" variant="outlined">
-                            <Form onSubmit={this.handleSubmit}>
-                                <Form.Group className="auth-form-group">
-                                    <Form.Label className="auth-form-label">Email</Form.Label>
-                                    <Form.Control type="email" name="email" id="Email" placeholder="Enter email" onChange={this.handleChange} />
-                                </Form.Group>
-                                <Form.Group className="auth-form-group">
-                                    <Form.Label className="auth-form-label">Password</Form.Label>
-                                    <Form.Control type="password" name="password" id="Password" placeholder="Enter password" onChange={this.handleChange} />
-                                </Form.Group>
-                                <Form.Group>
-                                    <Link to="/registration">
-                                        <Button variant="danger">Sign up</Button>
-                                    </Link>
+                        <Box boxShadow={3} className="auth-box">
+                            <Card className="auth-card" variant="outlined">
+                                <Form class="auth-form" onSubmit={this.handleSubmit}>
+                                    <Form.Group className="auth-form-group">
+                                        <Form.Control type="email" name="email" id="Email" placeholder="Email" onChange={this.handleChange} />
+                                    </Form.Group>
+                                    <Form.Group className="auth-form-group">
+                                        <Form.Control type="password" name="password" id="Password" placeholder="Password" onChange={this.handleChange} />
+                                    </Form.Group>
+                                    <Form.Group>
+                                        <Link to="/registration">
+                                            <Button variant="danger" className="option-button">Sign up</Button>
+                                        </Link>
                                     &nbsp;&nbsp;&nbsp;
-                                    <Button variant="info" type="submit">Login</Button>
-                                </Form.Group>
-                            </Form>
-                            {this.state.errorMsg ? alert : null}
-                        </Card>
+                                    <Button variant="info" type="submit" className="submit-button">Login</Button>
+                                    </Form.Group>
+                                </Form>
+                                {this.state.errorMsg ? alert : null}
+                            </Card>
+                        </Box>
                     </div>
                 </div>
             </div >

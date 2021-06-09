@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { returnErrors } from './errorsActions';
+import { clearErrors, returnErrors } from './errorsActions';
 import { tokenConfig } from './userActions';
 
 import {
@@ -25,6 +25,7 @@ export const getUserTeam = (team) => (dispatch, getState) => {
                 type: TEAM_LOADED,
                 payload: res.data
             })
+            dispatch(clearErrors());
             return res.data;
         })
         .catch(error => {
@@ -46,6 +47,7 @@ export const createTeam = (team) => (dispatch, getState) => {
                 type: CREATE_TEAM,
                 payload: res.data
             })
+            dispatch(clearErrors());
             return res.data;
         }
         )
@@ -86,6 +88,7 @@ export const deleteTeamMember = (teamId, teamName, member) => (dispatch, getStat
 export const addTeamMember = (teamId, teamName, member) => async (dispatch, getState) => {
     return axios.patch(`/teams/${teamId}/addMember`, { memberId: member }, tokenConfig(getState))
         .then((res) => {
+            dispatch(clearErrors());
             dispatch(getUserTeam(teamName));
             return res;
         })

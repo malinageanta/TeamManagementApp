@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { returnErrors } from './errorsActions';
+import { clearErrors, returnErrors } from './errorsActions';
 import { getUserTeam } from './teamActions';
 
 import {
@@ -24,7 +24,9 @@ export const loadUser = () => (dispatch, getState) => {
                 type: USER_LOADED,
                 payload: res.data
             })
+            dispatch(clearErrors());
             dispatch(getUserTeam(res.data.team));
+
         })
         .catch(error => {
             dispatch(returnErrors(error?.response?.data, error?.response?.status));
@@ -62,8 +64,8 @@ export const register = ({ firstName, lastName, email, password, role, team, pho
     axios.post('/users', body, config)
         .then(res => {
             dispatch({ type: REGISTER_SUCCESS, payload: res.data });
-            console.log(res.data);
-            dispatch(getUserTeam(res.data.user.team));
+            dispatch(clearErrors());
+            if ((res.data.user.team).length) dispatch(getUserTeam(res.data.user.team));
         })
         .catch(error => {
             dispatch(
@@ -88,7 +90,8 @@ export const login = ({ email, password, role, team, photo }) => dispatch => {
     axios.post('/auth', body, config)
         .then(res => {
             dispatch({ type: LOGIN_SUCCESS, payload: res.data });
-            dispatch(getUserTeam(res.data.user.team));
+            dispatch(clearErrors());
+            if ((res.data.user.team).length) dispatch(getUserTeam(res.data.user.team));
         })
         .catch(error => {
             dispatch(

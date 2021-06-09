@@ -17,7 +17,7 @@
   /* Control the right side */
   .right {
     right: 0;
-    background-color: #F3EBFF;
+    /* background-color: #EAF3FA; */
   }
   
   /* If you want the content centered horizontally and vertically */
@@ -31,17 +31,80 @@
 
   .auth-header {
     margin-bottom: 36px;
-    color: #3C4166;
+    color: #243762;
   }
 
   .auth-card {
     min-width: 30vw;
+    border: 1px solid #86a4ce !important;
+    padding: 12px;
   }
 
   .auth-form-group {
     text-align: left;
+    color: #163560;
+  }
+
+  .form-control{
+    border-bottom: 1px solid #AEC8ED !important;
+    border-top: none !important;
+    border-right: none !important;
+    border-left: none !important;
+    border-radius: 0px !important;
+    
+  }
+
+  .form-control:focus {
+    box-shadow: none !important;
+    border-bottom: 2px solid #AEC8ED !important;
   }
 
   .auth-form-label {
     padding: 10px;
+  }
+
+  .option-button {
+    background-color: #FBB03C !important;
+    border-color: #FBB03C !important;
+  }
+
+  .option-button:hover {
+    background-color: #FBB03C!important;
+    border-color: #DE6C36 !important;
+    font-weight: 500;
+  }
+
+  .submit-button {
+    background-color: #294E95!important;
+    border-color: #294E95 !important;
+  }
+
+  .submit-button:hover {
+    background-color: #294E95!important;
+    border-color: #162748 !important;
+    font-weight: 500;
+  }
+
+
+  .auth-form-group ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #AFC7EC !important;
+    font-weight: 350;
+  }
+  
+  .auth-form-group :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #AFC7EC !important;
+    font-weight: 350;
+  }
+  
+  .auth-form-group ::-ms-input-placeholder { /* Microsoft Edge */
+    color: #AFC7EC !important;
+    font-weight: 350;
+  }
+
+  .form-label {
+    margin-bottom: 0 !important;
+  }
+
+  .auth-box {
+    box-shadow: #aec7eb 0px 3px 3px -2px, #eaf3fa 0px 3px 4px 0px, #ccd9fc 0px 1px 8px 0px !important;
   }
