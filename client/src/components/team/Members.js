@@ -1,10 +1,8 @@
-import { IconButton, Avatar, Box, TextField } from '@material-ui/core';
+import { IconButton, Avatar, TextField } from '@material-ui/core';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import SideBar from '../SideBar';
 import '../../css/Members.css';
 import axios from 'axios';
-import { Card } from 'react-bootstrap';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -12,8 +10,12 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import { deleteTeamMember, addTeamMember } from '../../actions/teamActions';
 import { setUserItem } from '../../actions/userActions';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { Alert } from '@material-ui/lab';
+import NavBar from '../NavBar';
+import { DataGrid } from '@material-ui/data-grid';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+
 
 
 class Members extends Component {
@@ -37,13 +39,14 @@ class Members extends Component {
         this.getMemberDeleteButton = this.getMemberDeleteButton.bind(this);
         this.getAllMembers = this.getAllMembers.bind(this);
         this.handleAddMember = this.handleAddMember.bind(this);
-        this.getUsersCards = this.getUsersCards.bind(this);
         this.handleFormClose = this.handleFormClose.bind(this);
         this.handleFormOpen = this.handleFormOpen.bind(this);
         this.handleFormInput = this.handleFormInput.bind(this);
         this.getAddMemberForm = this.getAddMemberForm.bind(this);
-    }
+        this.getTableOfMembers = this.getTableOfMembers.bind(this);
+        this.createTableData = this.createTableData.bind(this);
 
+    }
 
     componentDidMount() {
         this.getAllMembers();
@@ -81,12 +84,12 @@ class Members extends Component {
     getMemberIcon(member) {
         let image = null;
         if (member.photo) {
-            image = <Avatar alt='user_photo' src={`${member.photo}`} className="member-icon" />;
+            image = <Avatar alt='user_photo' src={`${member.photo}`} className="nav-avatar" />
         }
         else {
             const first = ((member.firstName).charAt(0)).toUpperCase();
             const last = ((member.lastName).charAt(0)).toUpperCase();
-            image = <Avatar className="member-icon-default">{first + last}</Avatar>
+            image = <Avatar className="nav-avatar-default">{first + last}</Avatar>
         }
 
         return image;
@@ -110,10 +113,10 @@ class Members extends Component {
         var canDelete = !isCurrentUser && isAdmin;
 
         var disabledState = isCurrentUser ? !canLeave : !canDelete;
-        var text = isCurrentUser ? "Leave" : "Delete";
+        var text = isCurrentUser ? "Leave" : "Remove";
 
         button =
-            <Button size="small" color="primary" disabled={disabledState} onClick={() => this.handleDialogOpen(member)}>
+            <Button size="small" color="secondary" startIcon={<DeleteIcon />} disabled={disabledState} onClick={() => this.handleDialogOpen(member)}>
                 {text}
             </Button>
 
@@ -121,18 +124,25 @@ class Members extends Component {
     }
 
     getDeleteDialog() {
+        let msg = "";
+        if (!this.props.user.role === "admin") {
+            msg = "Are you sure you want to leave this team?"
+        }
+        else {
+            msg = "Are you sure you want to remove this member?";
+        }
         return <Dialog
             open={this.state.dialogOpen}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <DialogTitle id="alert-dialog-title">{"Are you sure you want to remove this member?"}</DialogTitle>
+            <DialogTitle id="alert-dialog-title" style={{ color: "#294E95" }}>{msg}</DialogTitle>
             <DialogActions>
-                <Button onClick={this.handleDialogClose} color="primary">
-                    Disagree
+                <Button onClick={this.handleDialogClose} className="add-member-cancel">
+                    Cancel
                 </Button>
-                <Button onClick={this.handleMemberDelete} color="primary" autoFocus>
-                    Agree
+                <Button onClick={this.handleMemberDelete} className="add-member-submit" autoFocus>
+                    Yes
                 </Button>
             </DialogActions>
         </Dialog>
@@ -165,22 +175,19 @@ class Members extends Component {
             })
     }
 
-    getUsersCards(teamMembers, user) {
-        return teamMembers?.map((member, index) =>
-        (
-            <Box p={1} key={index}>
-                <Card className="member-card">
-                    <Card.Body className="member-card-body">
-                        {this.getMemberIcon(member)}
-                        {this.getMemberInfo(member)}
-                    </Card.Body>
-                    <Card.Footer>
-                        {this.getMemberDeleteButton(user, member)}
-                    </Card.Footer>
-                </Card>
-            </Box>
-        )
-        )
+    createTableData(teamMembers, user) {
+        const dataArray = teamMembers?.map((member, index) => {
+            return {
+                _id: member._id,
+                id: index + 1,
+                photo: member.photo,
+                firstName: member.firstName,
+                lastName: member.lastName,
+                email: member.email,
+                role: member.role
+            }
+        })
+        return dataArray
     }
 
     handleFormClose() {
@@ -190,7 +197,7 @@ class Members extends Component {
         })
     }
 
-    handleFormOpen(member) {
+    handleFormOpen() {
         this.setState({
             formOpen: true
         })
@@ -226,8 +233,8 @@ class Members extends Component {
     getAddMemberForm() {
         const alert = <Alert variant="outlined" severity="error"> {this.state.errorMsg} </Alert>
         const form =
-            <Dialog open={this.state.formOpen} onClose={this.handleFormClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title"> Add a member to your team! </DialogTitle>
+            <Dialog open={this.state.formOpen} onClose={this.handleFormClose} aria-labelledby="form-dialog-title" className="add-member-dialog">
+                <DialogTitle id="form-dialog-title" className="add-member-dialog-title"> Add a member to your team! </DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -236,15 +243,16 @@ class Members extends Component {
                         label="Email Address"
                         type="email"
                         fullWidth
+                        className="add-member-input"
                         onChange={this.handleFormInput}
                     />
                     {this.state.errorMsg ? alert : null}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={this.handleFormClose} color="primary">
+                    <Button onClick={this.handleFormClose} className="add-member-cancel">
                         Cancel
                     </Button>
-                    <Button onClick={this.handleAddMember} color="primary">
+                    <Button onClick={this.handleAddMember} className="add-member-submit">
                         Add
                     </Button>
                 </DialogActions>
@@ -253,33 +261,47 @@ class Members extends Component {
         return form;
     }
 
-    render() {
-        const user = this.props.user;
-        const teamMembers = this.state.allMembers;
-        const header = <h2 style={{ marginLeft: "25px" }}>{this.props.user?.team}</h2>
-        const dialog = this.getDeleteDialog();
-        const users = this.getUsersCards(teamMembers, user);
+    getTableOfMembers() {
         const addButton = <IconButton color="primary" className="addMember" id="addMember" onClick={this.handleFormOpen}> <AddCircleOutlineIcon /> </IconButton>
+        const rows = this.createTableData(this.state.allMembers, this.props.user);
+        const columns = [
+            { field: 'id', headerName: 'ID', type: 'number', width: 100 },
+            {
+                field: 'picture', filterable: false, sortable: false, headerName: 'Picture', width: 130, renderCell: (params) => {
+                    return this.getMemberIcon(params.row);
+                }
+            },
+            { field: 'firstName', headerName: 'First name', width: 210 },
+            { field: 'lastName', headerName: 'Last name', width: 210 },
+            { field: 'email', headerName: 'Email', width: 300 },
+            { field: 'role', headerName: 'Role', width: 110 },
+            {
+                field: 'delete', headerName: 'Delete', width: 120, renderCell: (params) => {
+                    return this.getMemberDeleteButton(this.props.user, params.row);
+                }
+            },
+            { field: 'add', filterable: false, sortable: false, width: 100, renderHeader: () => { return this.props.user.role === "admin" ? addButton : null } }
+        ]
+
+        const table = <div style={{ height: 500, width: '100%', paddingTop: "30px" }}>
+            <DataGrid rows={rows} columns={columns} pageSize={8} hideFooterSelectedRowCount={true} />
+        </div>
+
+        return table;
+    }
+
+    render() {
+        const table = this.getTableOfMembers();
+        const dialog = this.getDeleteDialog();
         const form = this.getAddMemberForm();
         return (
-            <SideBar>
-                <div id="members" style={{ marginTop: "50px" }}>
-                    {header}
-                    <Box
-                        display="flex"
-                        flexWrap="wrap"
-                        p={1}
-                        m={1}
-                        bgcolor="background.paper"
-                        css={{ maxWidth: '100%' }}
-                    >
-                        {users}
-                        {dialog}
-                        {user.role === "admin" ? addButton : null}
-                        {form}
-                    </Box>
-                </div>
-            </SideBar >
+
+            <div>
+                <NavBar />
+                {table}
+                {dialog}
+                {form}
+            </div>
         )
 
     }

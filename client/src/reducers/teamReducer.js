@@ -4,12 +4,13 @@ import {
     SET_TEAM_ITEM,
     TEAM_LOADING,
     TEAM_LOADED,
-    GET_TEAM_FAIL
+    GET_TEAM_FAIL,
+    TEAM_LOADING_FAIL
 } from '../actions/types';
 
 const initState = {
     team: null,
-    teamIsLoading: false
+    teamIsLoading: true
 }
 
 const teamReducer = (state = initState, action) => {
@@ -42,6 +43,7 @@ const teamReducer = (state = initState, action) => {
                 ...state,
                 team: action.payload
             }
+        case TEAM_LOADING_FAIL:
         default:
             return state;
     }

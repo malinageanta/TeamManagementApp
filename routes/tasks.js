@@ -7,14 +7,20 @@ const auth = require('../middleware/auth');
 
 router.get('/', auth, async (req, res) => {
     try {
-        console.log(req.query.members);
+        if (!req.query.members) {
+            return res.status(400).json({ msg: 'Members field is mandatory.' })
+        }
+
         let members = req.query.members.split(',');
-        console.log(members);
-        Task.find({ 'assignee': { $in: members } })
-            .then(task => {
-                if (!task) return res.status(400).json({ msg: 'No task created yet!' });
-                else return res.json(task);
-            })
+        if (!members || !members.length) {
+            return res.status(400).json({ msg: 'Unable to parse members list from request.' })
+        }
+
+        let task = await Task.find({ 'assignee': { $in: members } })
+
+        if (!task) return res.status(400).json({ msg: 'No task created yet!' });
+
+        return res.json(task);
     }
     catch (err) {
         res.send('Error: ' + err);

@@ -14,7 +14,7 @@ import AddTeam from './components/team/AddTeam';
 import Members from './components/team/Members';
 import AddTeamRoute from './utils/AddTeamRoute';
 import Tasks from './components/tasks/Tasks';
-import AppBar from './components/AppBar';
+import NavBar from './components/NavBar';
 
 export const history = createBrowserHistory();
 
@@ -26,18 +26,22 @@ class App extends Component {
 
 
   render() {
-    return (
-      <Router history={history}>
-        <AuthRoute path="/registration" component={Registration} />
-        <AuthRoute path="/" exact component={Login} />
-        <PrivateRoute path="/dashboard" component={Dashboard} />
-        <AddTeamRoute path="/addTeam" component={AddTeam} />
-        <PrivateRoute path="/members" component={Members} />
-        <PrivateRoute path="/tasks" component={Tasks} />
-        <PrivateRoute path="/test" component={AppBar} />
+    if (this.props.userIsLoading || this.props.teamIsLoading) {
+      return (<div></div>)
+    } else {
+      return (
+        <Router history={history}>
+          <AuthRoute path="/registration" component={Registration} />
+          <AuthRoute path="/" exact component={Login} />
+          <PrivateRoute path="/dashboard" component={Dashboard} />
+          <AddTeamRoute path="/addTeam" component={AddTeam} />
+          <PrivateRoute path="/members" component={Members} />
+          <PrivateRoute path="/tasks" component={Tasks} />
+          <PrivateRoute path="/test" component={NavBar} />
 
-      </Router>
-    );
+        </Router>
+      );
+    }
   }
 }
 
@@ -48,6 +52,7 @@ App.propTypes = {
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.user.isAuthenticated,
+  teamIsLoading: state.team.teamIsLoading,
   userIsLoading: state.user.userIsLoading
 });
 

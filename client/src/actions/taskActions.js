@@ -38,8 +38,8 @@ export const getTeamTasks = (teamMembers) => (dispatch, getState) => {
 export const createTask = (task) => (dispatch, getState) => {
     return axios.post('/tasks', task, tokenConfig(getState))
         .then(() => {
-            dispatch(clearErrors());
             dispatch(getTeamTasks(task.currentTeam.members));
+            dispatch(clearErrors());
         })
         .catch(error => {
             dispatch(

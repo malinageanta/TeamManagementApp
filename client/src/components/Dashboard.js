@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import SideBar from './SideBar';
 import { Button } from 'react-bootstrap';
 import { setUserItem } from '../actions/userActions';
 import { getUserTeam, createTeam } from '../actions/teamActions';
 import { Avatar } from '@material-ui/core';
 import '../css/Drawer.css';
+import NavBar from './NavBar';
 
 
 
@@ -43,7 +43,7 @@ class Dashboard extends Component {
 
         return (
             <div>
-                <SideBar />
+                <NavBar />
             </div>
         )
     }

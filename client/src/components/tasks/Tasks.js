@@ -6,6 +6,7 @@ import { getTeamTasks } from '../../actions/taskActions';
 import { Alert } from '@material-ui/lab';
 import { Card } from 'react-bootstrap';
 import '../../css/Members.css';
+import NavBar from '../NavBar';
 
 
 
@@ -21,7 +22,6 @@ class Tasks extends Component {
     }
 
     componentDidMount() {
-
         this.props.getTeamTasks(this.props.team?.members.toString());
     }
 
@@ -38,6 +38,10 @@ class Tasks extends Component {
     }
 
     getTasksCards(tasks) {
+        console.log(tasks);
+        if (!tasks) {
+            return;
+        }
         return tasks?.map((task) =>
         (
             <Box p={1}>
@@ -58,8 +62,9 @@ class Tasks extends Component {
         const header = <h2 style={{ marginLeft: "25px" }}> Tasks </h2>
         const alert = <Alert variant="outlined" severity="error"> {this.state.errorMsg} </Alert>
         return (
-            <SideBar>
-                <div id="tasks" style={{ marginTop: "50px" }}>
+            <div>
+                <NavBar />
+                <div id="tasks">
                     {header}
                     <Box
                         display="flex"
@@ -73,7 +78,7 @@ class Tasks extends Component {
                         {this.state.errorMsg ? alert : null}
                     </Box>
                 </div>
-            </SideBar>
+            </div>
         )
     }
 }

@@ -33,7 +33,7 @@ export const getUserTeam = (team) => (dispatch, getState) => {
                 returnErrors(
                     error.response.data,
                     error.response.status,
-                    'GET_TEAM_FAIL'
+                    'TEAM_LOADING_FAIL'
                 )
             );
         });
@@ -88,8 +88,8 @@ export const deleteTeamMember = (teamId, teamName, member) => (dispatch, getStat
 export const addTeamMember = (teamId, teamName, member) => async (dispatch, getState) => {
     return axios.patch(`/teams/${teamId}/addMember`, { memberId: member }, tokenConfig(getState))
         .then((res) => {
-            dispatch(clearErrors());
             dispatch(getUserTeam(teamName));
+            dispatch(clearErrors());
             return res;
         })
         .catch(error => {

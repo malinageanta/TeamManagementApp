@@ -27,11 +27,80 @@
 }
 
 .addMember .MuiSvgIcon-root {
-    font-size: 2.5rem !important;
+    font-size: 1.8rem !important;
+    color: #ffc851 !important;
 }
 
 .addMember {
-    height: 60px;
-    width: 60px;
-    top: 6px;
+    height: 45px;
+    width: 45px;
+}
+
+.addMember:hover {
+    background-color: #fdf9f2 !important;
+}
+
+
+.MuiDataGrid-cell:focus {
+    outline: none !important;
+}
+
+.MuiDataGrid-columnHeader {
+    outline: none !important;
+}
+
+.Mui-selected {
+    background-color: transparent !important;
+}
+
+.MuiDataGrid-root {
+    border: none !important;
+}
+
+.MuiDataGrid-iconSeparator {
+    color: #ffc851 !important;
+}
+
+.MuiDataGrid-root .MuiDataGrid-row:hover {
+    background-color:#F8F9FF !important;
+}
+
+.MuiDataGrid-root .MuiDataGrid-columnHeader:focus-within, .MuiDataGrid-root .MuiDataGrid-cell:focus-within {
+    outline: none !important;
+}
+
+.add-member-dialog .MuiFormLabel-root.Mui-focused {
+    color: #294E95;
+}
+  
+.add-member-dialog .MuiInput-underline:after  {
+    border-bottom: 2px solid #294E95;
+}
+
+.add-member-dialog-title {
+    color: #f8c24e;
+}
+
+.add-member-cancel  {
+    background-color: #f8c24e !important;
+    color: white !important;
+    font-weight: 400;
+}
+
+.add-member-cancel:hover {
+    font-weight: 600;
+}
+
+.add-member-submit  {
+    background-color: #294E95!important;
+    color: white !important;
+    font-weight: 400;
+}
+
+.add-member-submit:hover {
+    font-weight: 600;
+}
+
+.add-member-input .MuiInputBase-input{
+    font-size: small !important;
 }

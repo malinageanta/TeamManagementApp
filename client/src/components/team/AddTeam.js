@@ -93,6 +93,7 @@ class AddTeam extends Component {
                         label="Team Name"
                         type="text"
                         fullWidth
+                        className="dialog-input"
                         onChange={this.handleCreateFormInput}
                     />
                     {this.state.errorMsg ? alert : null}
@@ -162,6 +163,7 @@ class AddTeam extends Component {
                         label="Team Name"
                         type="text"
                         fullWidth
+                        className="dialog-input"
                         onChange={this.handleJoinFormInput}
                     />
                     {this.state.errorMsg ? alert : null}
