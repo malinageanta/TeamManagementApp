@@ -10,7 +10,7 @@ import {
 
 const initState = {
     team: null,
-    teamIsLoading: true
+    teamIsLoading: false
 }
 
 const teamReducer = (state = initState, action) => {

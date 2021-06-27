@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../axios';
 import { clearErrors, returnErrors } from './errorsActions';
 import { getUserTeam } from './teamActions';
 
@@ -18,7 +18,7 @@ import {
 export const loadUser = () => (dispatch, getState) => {
     dispatch({ type: USER_LOADING });
 
-    return axios.get('/auth/user', tokenConfig(getState))
+    return axios.get('/auth/user')
         .then(res => {
             dispatch({
                 type: USER_LOADED,
@@ -37,21 +37,6 @@ export const loadUser = () => (dispatch, getState) => {
 
 };
 
-export const tokenConfig = getState => {
-    const token = getState().user.token;
-
-    const config = {
-        headers: {
-            "Content-type": "application/json"
-        }
-    };
-
-    if (token) {
-        config.headers['x-auth-token'] = token;
-    }
-
-    return config;
-};
 
 export const register = ({ firstName, lastName, email, password, role, team, photo }) => dispatch => {
     const config = {
@@ -116,7 +101,6 @@ export const logout = () => dispatch => {
 
 export const setUserItem = (_id, itemToBeUpdated, newItem, isOtherUser) => (dispatch, getState) => {
     let config = {
-        headers: (tokenConfig(getState)).headers,
         params: {
             itemToBeUpdated: itemToBeUpdated
         }

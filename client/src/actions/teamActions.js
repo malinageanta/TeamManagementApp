@@ -1,6 +1,5 @@
-import axios from 'axios';
+import axios from '../axios';
 import { clearErrors, returnErrors } from './errorsActions';
-import { tokenConfig } from './userActions';
 
 import {
     CREATE_TEAM,
@@ -11,7 +10,6 @@ import {
 
 export const getUserTeam = (team) => (dispatch, getState) => {
     let config = {
-        headers: (tokenConfig(getState)).headers,
         params: {
             team: team
         }
@@ -41,7 +39,7 @@ export const getUserTeam = (team) => (dispatch, getState) => {
 
 
 export const createTeam = (team) => (dispatch, getState) => {
-    return axios.post('/teams', team, tokenConfig(getState))
+    return axios.post('/teams', team)
         .then(res => {
             dispatch({
                 type: CREATE_TEAM,
@@ -64,7 +62,6 @@ export const createTeam = (team) => (dispatch, getState) => {
 
 export const setTeamItem = (_id, itemToBeUpdated, newItem) => (dispatch, getState) => {
     let config = {
-        headers: (tokenConfig(getState)).headers,
         params: {
             itemToBeUpdated: itemToBeUpdated
         }
@@ -79,14 +76,14 @@ export const setTeamItem = (_id, itemToBeUpdated, newItem) => (dispatch, getStat
 }
 
 export const deleteTeamMember = (teamId, teamName, member, memberHasLeft) => (dispatch, getState) => {
-    return axios.patch(`/teams/${teamId}/deleteMember`, { memberId: member, memberHasLeft }, tokenConfig(getState))
+    return axios.patch(`/teams/${teamId}/deleteMember`, { memberId: member, memberHasLeft })
         .then(() => {
             dispatch(getUserTeam(teamName));
         })
 }
 
 export const addTeamMember = (teamId, teamName, member) => async (dispatch, getState) => {
-    return axios.patch(`/teams/${teamId}/addMember`, { memberId: member }, tokenConfig(getState))
+    return axios.patch(`/teams/${teamId}/addMember`, { memberId: member })
         .then((res) => {
             dispatch(getUserTeam(teamName));
             dispatch(clearErrors());

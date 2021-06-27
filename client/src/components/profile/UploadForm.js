@@ -3,7 +3,6 @@ import { Component } from 'react';
 import { connect } from 'react-redux';
 import { setUserItem } from '../../actions/userActions';
 import Resizer from "react-image-file-resizer";
-import Link from '@material-ui/core/Link';
 import '../../css/Drawer.css';
 
 

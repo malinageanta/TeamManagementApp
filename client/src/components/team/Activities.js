@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getState } from '../../store';
-import axios from 'axios';
-import { tokenConfig } from '../../actions/userActions';
+import axios from '../../axios';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
@@ -16,46 +15,44 @@ import { DateTime } from "luxon";
 import Pagination from '@material-ui/lab/Pagination';
 
 
-
-
 class Activities extends Component {
     constructor(props) {
         super(props);
-
+        this.isCancelled = false;
         this.state = {
             allMembers: [],
             page: 1
         }
 
-        this.dataLimitOnPage = 4;
+        this.dataLimitOnPage = 5;
 
         this.getAllMembers = this.getAllMembers.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
 
-    getAllMembers(getState) {
+    async getAllMembers(getState) {
         let config = {
-            headers: (tokenConfig(getState)).headers,
             params: {
                 team: this.props.user?.team
             }
         }
 
-        return axios.get('/users', config)
-            .then(res => {
-                this.setState({
-                    allMembers: res.data
-                })
-            }
-            )
-            .catch(error => {
-                console.log(error);
-            })
+        const res = await axios.get('/users', config)
+        if (!this.isCancelled) {
+            this.setState({
+                allMembers: res.data
+            });
+        }
     }
 
     async componentDidMount() {
         await this.getAllMembers(getState);
     }
+
+    componentWillUnmount() {
+        this.isCancelled = true;
+    }
+
 
     getMemberIcon(member) {
         let image = null;
@@ -73,22 +70,25 @@ class Activities extends Component {
 
     createTableData(teamMembers) {
         const dataArray =
-            this.props.team.activities?.map((activity, index) => {
-                var member = teamMembers.find((x) => {
-                    return x.email === activity.name
-                })
+            this.props.team.activities?.filter(x => teamMembers.find((y) => {
+                return y.email === x.name
+            }))
+                .map((activity, index) => {
+                    var member = teamMembers.find((x) => {
+                        return x.email === activity.name
+                    })
 
-                return {
-                    id: index + 1,
-                    photo: member.photo,
-                    firstName: member.firstName,
-                    lastName: member.lastName,
-                    timestamp: activity.timestamp,
-                    msg: activity.msg,
-                    email: activity.name,
-                    type: activity.type
-                }
-            })
+                    return {
+                        id: index + 1,
+                        photo: member.photo,
+                        firstName: member.firstName,
+                        lastName: member.lastName,
+                        timestamp: activity.timestamp,
+                        msg: activity.msg,
+                        email: activity.name,
+                        type: activity.type
+                    }
+                })
         return dataArray.reverse();
     }
 
@@ -96,42 +96,47 @@ class Activities extends Component {
     getTableOfActivities(activities) {
         activities = this.getPaginatedData(activities);
         const form =
-            activities.map((activity) => {
-                const username = <text className="username"> {activity.firstName + " " + activity.lastName} </text>;
-                const email = <text className="email">{activity.email}</text>;
+            activities.map((activity, index) => {
+                const username = <span className="username"> {activity.firstName + " " + activity.lastName} </span>;
+                const email = <span className="email">{activity.email}</span>;
                 const output = DateTime.fromMillis(activity.timestamp).toRelative();
                 return (
-                    <List style={{ width: "100%", paddingLeft: "9%", paddingRight: "9%" }}>
+                    <div key={index}>
                         <ListItem alignItems="flex-start">
                             <ListItemAvatar>
                                 {this.getMemberIcon(activity)}
                             </ListItemAvatar>
                             <ListItemText
                                 primary={
-                                    <div>
+                                    <span>
                                         {username}
                                         {email}
-                                    </div>}
+                                    </span>}
                                 secondary={
-                                    <React.Fragment className="msg">
+                                    <React.Fragment>
                                         <Typography
                                             component="span"
                                             variant="body2"
                                             color="textPrimary"
+                                            className="msg"
                                         >
                                             {activity.data}
                                         </Typography>
-                                        <Alert className="alert-activity" severity={activity.type}>{activity.msg}</Alert>
                                     </React.Fragment>
                                 }
                             />
                             <ListItemText className="timestamp" secondary={output} />
                         </ListItem>
+                        <Alert className="alert-activity" severity={activity.type}>{activity.msg}</Alert>
                         <Divider className="activities-divider" variant="inset" component="li" />
-                    </List>
+                    </div>
                 )
             })
-        return form;
+
+        return <List style={{
+            width: "100%", paddingLeft: "9%", paddingRight: "9%", minHeight: '80vh'
+        }
+        }> {form} </List >;
     }
 
     handleChange(event, value) {
@@ -148,7 +153,7 @@ class Activities extends Component {
 
 
     render() {
-        if (!this.state.allMembers.length) {
+        if (!this.state.allMembers?.length) {
             return null;
         }
         const activities = this.createTableData(this.state.allMembers);
@@ -157,7 +162,7 @@ class Activities extends Component {
         return (
             <div>
                 {table}
-                <Pagination count={Math.ceil(this.props.team.activities.length / 4)} page={this.state.page} onChange={this.handleChange} className="pagination" />
+                <Pagination count={Math.ceil(this.props.team.activities.length / this.dataLimitOnPage)} page={this.state.page} onChange={this.handleChange} className="pagination" />
             </div>
         )
     }

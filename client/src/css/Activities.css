@@ -24,6 +24,8 @@
 
 .alert-activity {
     background-color: transparent !important;
+    margin-left: 50px;
+    margin-top: -30px;
 }
 
 .MuiDivider-root {
@@ -31,11 +33,14 @@
 }
 
 .pagination {
-    justify-content: center;
-    bottom: 0;
-position: absolute;
-width: 100%;
-padding-bottom: 12px;
+ display: inherit;
+ width:50%;
+ margin: auto;
+}
+
+.pagination > ul {
+    width: 50%;
+    margin: auto;
 }
 
 .MuiPaginationItem-icon {

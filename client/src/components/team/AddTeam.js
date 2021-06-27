@@ -7,7 +7,6 @@ import '../../css/Authentication.css';
 import { connect } from 'react-redux';
 import { IconButton, TextField } from '@material-ui/core';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import Logout from '../auth/Logout';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -16,7 +15,7 @@ import { Alert } from '@material-ui/lab';
 import { createTeam, setTeamItem, getUserTeam } from '../../actions/teamActions';
 import { setUserItem } from '../../actions/userActions';
 import { Redirect } from 'react-router';
-
+import { logout } from '../../actions/userActions';
 
 class AddTeam extends Component {
     constructor(props) {
@@ -24,13 +23,11 @@ class AddTeam extends Component {
         this.state = {
             createFormOpen: false,
             joinFormOpen: false,
-            logout: false,
             errorMsg: null,
             createTeamInput: "",
             joinTeamInput: ""
         };
 
-        this.handleLogout = this.handleLogout.bind(this);
         this.handleCreateFormClose = this.handleCreateFormClose.bind(this);
         this.handleCreateFormOpen = this.handleCreateFormOpen.bind(this);
         this.handleJoinFormOpen = this.handleJoinFormOpen.bind(this);
@@ -54,12 +51,6 @@ class AddTeam extends Component {
                 this.setState({ errorMsg: null });
             }
         }
-    }
-
-    handleLogout() {
-        this.setState({
-            logout: true
-        })
     }
 
     handleCreateFormClose() {
@@ -190,8 +181,8 @@ class AddTeam extends Component {
         this.props.getUserTeam(name)
             .then((team) => {
                 if (team) {
-                    const team_id = this.props.team._id;
-                    const members = this.props.team.members;
+                    const team_id = team._id;
+                    const members = team.members;
                     members.push(newMember);
                     this.props.setUserItem(user_id, 'team', name, false);
                     this.props.setTeamItem(team_id, 'members', members);
@@ -200,7 +191,10 @@ class AddTeam extends Component {
     }
 
     render() {
-        const team = this.props.user.team;
+        const team = this.props.user?.team;
+        if (!this.props.user) {
+            return <div></div>
+        }
         if (team) {
             return <Redirect to="/dashboard" />
         }
@@ -226,9 +220,8 @@ class AddTeam extends Component {
                             <Button className="join-button" variant="outline-info" onClick={this.handleJoinFormOpen} name="join">Join a team</Button>
                             <Card.Footer style={{ backgroundColor: 'transparent', border: 'none' }}>
                                 <h6 className="addTeam-subheader"> Did you change your mind? </h6>
-                                <IconButton className="exit-button" onClick={() => this.handleLogout()}>
+                                <IconButton className="exit-button" onClick={this.props.logout}>
                                     <ArrowForwardIcon className="exit-icon" fontSize="small" />
-                                    {this.state.logout ? <Logout /> : null}
                                 </IconButton>
                             </Card.Footer>
                         </Card>
@@ -246,4 +239,4 @@ const mapStateToProps = (state) => ({
     team: state.team.team
 });
 
-export default connect(mapStateToProps, { createTeam, setUserItem, setTeamItem, getUserTeam })(AddTeam);
+export default connect(mapStateToProps, { createTeam, setUserItem, setTeamItem, getUserTeam, logout })(AddTeam);

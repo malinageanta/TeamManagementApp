@@ -7,9 +7,16 @@ import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
 import AssignmentRoundedIcon from '@material-ui/icons/AssignmentRounded';
 import GroupWorkRoundedIcon from '@material-ui/icons/GroupWorkRounded';
 import Avatar from '@material-ui/core/Avatar';
-import Logout from './auth/Logout';
 import Resizer from "react-image-file-resizer";
 import UploadForm from './profile/UploadForm';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import { Alert } from '@material-ui/lab';
+import { TextField } from '@material-ui/core';
+import { logout } from '../actions/userActions';
 
 
 class NavBar extends Component {
@@ -18,12 +25,17 @@ class NavBar extends Component {
         super(props);
 
         this.state = {
-            logout: false
+            formOpen: false,
+            oldPassword: "",
+            newPassword: ""
         }
 
         this.getAvatar = this.getAvatar.bind(this);
-        this.handleLogout = this.handleLogout.bind(this);
         this.changeHandler = this.changeHandler.bind(this);
+        this.handleNewPasswordInput = this.handleNewPasswordInput.bind(this);
+        this.handleOldPasswordInput = this.handleOldPasswordInput.bind(this);
+        this.handleFormClose = this.handleFormClose.bind(this);
+        this.handleFormOpen = this.handleFormOpen.bind(this);
 
     }
 
@@ -52,12 +64,6 @@ class NavBar extends Component {
 
 
 
-    handleLogout = () => {
-        this.setState({
-            logout: true
-        })
-    }
-
 
     getAvatar() {
         let image = null;
@@ -73,8 +79,83 @@ class NavBar extends Component {
         return image;
     }
 
+    handleFormOpen() {
+        this.setState({
+            formOpen: true
+        })
+    }
+
+    handleFormClose() {
+        this.setState({
+            formOpen: false
+        })
+    }
+
+    handleOldPasswordInput(event) {
+        // this.setState({
+        //     oldPassword: event.target.value
+        // });
+    }
+
+    handleNewPasswordInput(event) {
+
+    }
+
+    handleAddMember() {
+        // const team_id = this.props.team._id;
+        // const team_name = this.props.team.name;
+        // const newMember = this.state.memberToBeAdded;
+        // this.props.addTeamMember(team_id, team_name, newMember)
+        //     .then(async (res) => {
+        //         await this.getAllMembers();
+        //         if (res.status === 202) {
+        //             this.handleFormClose();
+        //             this.setState({
+        //                 memberToBeAdded: ""
+        //             })
+        //         }
+        //     })
+        //     .catch(error => {
+        //         console.log(error);
+        //     });
+
+
+    }
+
+    getChangePasswordForm() {
+        const alert = <Alert variant="outlined" severity="error"> {this.state.errorMsg} </Alert>
+        const form =
+            <Dialog open={this.state.formOpen} onClose={this.handleFormClose} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title" style={{ color: "#294E95" }}> Add a member to your team! </DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Email Address"
+                        type="email"
+                        fullWidth
+                        className="add-member-input"
+                    // onChange={}
+                    />
+                    {this.state.errorMsg ? alert : null}
+                </DialogContent>
+                <DialogActions>
+                    <Button className="add-member-submit">
+                        Add
+                    </Button>
+                    <Button onClick={this.handleFormClose} className="add-member-cancel">
+                        Cancel
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+        return form;
+    }
+
     render() {
         let image = this.getAvatar();
+        //let cp = this.getChangePasswordForm();
         return (
             <div>
                 <Navbar expand="lg" style={{ paddingLeft: "7%", paddingRight: "11%" }}>
@@ -109,19 +190,16 @@ class NavBar extends Component {
                         </Nav>
                         <Nav className="nav-dropdown-button">
                             {image}
+                            {/* {cp} */}
                             <NavDropdown title="" id="navbarScrollingDropdown">
 
                                 <NavDropdown.Item>
                                     <UploadForm />
                                 </NavDropdown.Item>
-                                <NavDropdown.Item>
+                                <NavDropdown.Item onClick={this.handleFormOpen}>
                                     Change password
                                 </NavDropdown.Item>
-                                <NavDropdown.Item onClick={this.handleLogout}>Logout</NavDropdown.Item>
-                                {this.state.logout ?
-                                    <Logout />
-                                    : null
-                                }
+                                <NavDropdown.Item onClick={this.props.logout}>Logout</NavDropdown.Item>
                             </NavDropdown>
                         </Nav>
                         <Nav>
@@ -138,4 +216,4 @@ const mapStateToProps = state => ({
     user: state.user.user
 });
 
-export default connect(mapStateToProps)(NavBar);
+export default connect(mapStateToProps, { logout })(NavBar);

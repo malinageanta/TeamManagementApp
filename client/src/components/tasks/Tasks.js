@@ -6,8 +6,7 @@ import { extend, addClass } from '@syncfusion/ej2-base';
 import { KanbanComponent, ColumnsDirective, ColumnDirective } from "@syncfusion/ej2-react-kanban";
 import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { Query } from '@syncfusion/ej2-data';
-import axios from 'axios';
-import { tokenConfig } from '../../actions/userActions';
+import axios from '../../axios';
 import { getState } from '../../store';
 import { Avatar, IconButton } from '@material-ui/core';
 import { TaskDialog } from './TaskDialog';
@@ -31,6 +30,8 @@ class Tasks extends Component {
             taskToBeAdded: {},
         }
 
+        this.isCancelled = false;
+
         this.statusData = ["Open", "InProgress", "Review", "Close"];
         this.priorityData = ["Low", "Normal", "High"];
 
@@ -48,7 +49,6 @@ class Tasks extends Component {
 
     getAllMembers(getState) {
         let config = {
-            headers: (tokenConfig(getState)).headers,
             params: {
                 team: this.props.user?.team
             }
@@ -56,16 +56,17 @@ class Tasks extends Component {
 
         return axios.get('/users', config)
             .then(res => {
-                let assignees = []
-                for (const item of res.data) {
-                    const a = { fullName: item.lastName + ' ' + item.firstName, email: item.email }
-                    assignees.push(a)
+                if (!this.isCancelled) {
+                    let assignees = []
+                    for (const item of res.data) {
+                        const a = { fullName: item.lastName + ' ' + item.firstName, email: item.email }
+                        assignees.push(a)
+                    }
+                    this.setState({
+                        assigneesData: assignees
+                    })
                 }
-                this.setState({
-                    assigneesData: assignees
-                })
-            }
-            )
+            })
             .catch(error => {
                 console.log(error);
             })
@@ -75,11 +76,16 @@ class Tasks extends Component {
         await this.getAllMembers(getState);
         this.props.getTeamTasks(this.props.user?.team)
             .then((res) => {
-                console.log(res)
-                this.setState({
-                    data: res
-                })
+                if (!this.isCancelled) {
+                    this.setState({
+                        data: res
+                    })
+                }
             })
+    }
+
+    componentWillUnmount() {
+        this.isCancelled = true;
     }
 
     getString(assignee) {
@@ -170,7 +176,6 @@ class Tasks extends Component {
     }
 
     searchClick(e) {
-        console.log("searchValue", e)
         let searchValue = e.value;
         let searchQuery = new Query();
         if (searchValue !== '') {
@@ -225,7 +230,7 @@ class Tasks extends Component {
                 <div className='kanban-control-section'>
                     <div className="col-lg-6 property-section search-div-center" style={{ paddingBottom: "6px" }}>
                         <div className="property-panel-section" style={{ width: "96vw" }}>
-                            <p className="property-panel-header">Search</p>
+                            <div className="property-panel-header">Search</div>
                             <div className="property-panel-content">
                                 <table className="e-filter-table">
                                     <tbody>

@@ -11,7 +11,7 @@ router.get('/usersWithTasks', auth, async (req, res) => {
     try {
         const users = await User.find({ team: req.query.team });
 
-        tasks = [];
+        let tasks = [];
         for (const user of users) {
             userTasks = await Task.find({ assignee: user.email });
             userTasks = userTasks.map((x) => {
@@ -38,7 +38,6 @@ router.get('/usersWithTasks', auth, async (req, res) => {
 router.post('/', auth, async (req, res) => {
     try {
         const { name, type, priority, description, assignee, currentTeam } = req.body;
-        console.log(req.body)
         if (!name || !type || !priority || !assignee) {
             return res.status(400).json({ msg: 'Non optional field(s) empty!' });
         }
@@ -98,7 +97,6 @@ router.delete('/:taskId', auth, async (req, res) => {
 
         var team = await Team.findOne({ name: req.body.team });
         await team.activities.push({ name: req.user.email, timestamp: Date.now(), msg: `${req.user.firstName} ${req.user.lastName} deleted task ${deletedTask.name}.`, update: "error" });
-        console.log(team)
         await team.save();
         res.status(202).send();
     }

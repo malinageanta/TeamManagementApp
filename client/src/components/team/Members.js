@@ -2,14 +2,14 @@ import { IconButton, Avatar, TextField } from '@material-ui/core';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import '../../css/Members.css';
-import axios from 'axios';
+import axios from '../../axios';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import { deleteTeamMember, addTeamMember } from '../../actions/teamActions';
-import { setUserItem, tokenConfig } from '../../actions/userActions';
+import { setUserItem } from '../../actions/userActions';
 import { Alert } from '@material-ui/lab';
 import NavBar from '../NavBar';
 import { DataGrid } from '@material-ui/data-grid';
@@ -30,9 +30,9 @@ class Members extends Component {
             formOpen: false,
             memberToBeAdded: "",
             errorMsg: null,
-            memberHasLeft: false,
-            deleteMsg: ""
         }
+
+        this.isCancelled = false;
 
         this.getMemberInfo = this.getMemberInfo.bind(this);
         this.getMemberIcon = this.getMemberIcon.bind(this);
@@ -53,23 +53,11 @@ class Members extends Component {
 
     componentDidMount() {
         this.getAllMembers(getState);
-        if (!this.props.user.role === "admin") {
-            this.setState({
-                memberHasLeft: true,
-                deleteMsg: "Are you sure you want to leave this team?"
-            })
-        }
-        else {
-            this.setState({
-                memberHasLeft: false,
-                deleteMsg: "Are you sure you want to remove this member?"
-            })
-        }
     }
 
     componentDidUpdate(prevProps) {
         const { error } = this.props;
-        if (error !== prevProps.error) {
+        if (error !== prevProps.error && !this.isCancelled) {
             if (error.id === 'ADD_MEMBER_FAIL') {
                 this.setState({ errorMsg: error.msg.msg });
             }
@@ -79,9 +67,12 @@ class Members extends Component {
         }
     }
 
+    componentWillUnmount() {
+        this.isCancelled = true;
+    }
+
     getAllMembers(getState) {
         let config = {
-            headers: (tokenConfig(getState)).headers,
             params: {
                 team: this.props.user?.team
             }
@@ -89,11 +80,12 @@ class Members extends Component {
 
         return axios.get('/users', config)
             .then(res => {
-                this.setState({
-                    allMembers: res.data
-                })
-            }
-            )
+                if (!this.isCancelled) {
+                    this.setState({
+                        allMembers: res.data
+                    })
+                }
+            })
             .catch(error => {
                 console.log(error);
             })
@@ -142,12 +134,13 @@ class Members extends Component {
     }
 
     getDeleteDialog() {
+        const msg = this.props.user.role === 'admin' ? "Are you sure you want to leave this team?" : "Are you sure you want to remove this member?"
         return <Dialog
             open={this.state.dialogOpen}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <DialogTitle id="alert-dialog-title" style={{ color: "#294E95" }}>{this.state.deleteMsg}</DialogTitle>
+            <DialogTitle id="alert-dialog-title" style={{ color: "#294E95" }}>{msg}</DialogTitle>
             <DialogActions>
                 <Button onClick={this.handleMemberDelete} className="add-member-submit" autoFocus>
                     Yes
@@ -160,23 +153,29 @@ class Members extends Component {
     }
 
     handleDialogClose() {
-        this.setState({
-            dialogOpen: false
-        })
+        if (!this.isCancelled) {
+            this.setState({
+                dialogOpen: false
+            })
+        }
     }
 
     handleDialogOpen(member) {
-        this.setState({
-            dialogOpen: true,
-            memberToBeDeleted: member
-        })
+        if (!this.isCancelled) {
+            this.setState({
+                dialogOpen: true,
+                memberToBeDeleted: member
+            })
+        }
     }
 
+
     handleMemberDelete() {
+        const memberHasLeft = this.props.user.role === 'admin'
         const team_id = this.props.team._id;
         const team_name = this.props.team.name;
         const user_id = this.state.memberToBeDeleted._id;
-        this.props.deleteTeamMember(team_id, team_name, this.state.memberToBeDeleted.email, this.state.memberHasLeft)
+        this.props.deleteTeamMember(team_id, team_name, this.state.memberToBeDeleted.email, memberHasLeft)
             .then(() => {
                 this.props.setUserItem(user_id, 'team', "", this.props.user._id !== user_id)
                     .then(async () => {
@@ -242,6 +241,7 @@ class Members extends Component {
     }
 
     getAddMemberForm() {
+
         const alert = <Alert variant="outlined" severity="error"> {this.state.errorMsg} </Alert>
         const form =
             <Dialog open={this.state.formOpen} onClose={this.handleFormClose} aria-labelledby="form-dialog-title">
@@ -302,6 +302,9 @@ class Members extends Component {
     }
 
     render() {
+        if (!this.props.user?.team) {
+            return <div></div>
+        }
         const table = this.getTableOfMembers();
         const dialog = this.getDeleteDialog();
         const form = this.getAddMemberForm();

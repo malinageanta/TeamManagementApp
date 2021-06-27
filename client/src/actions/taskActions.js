@@ -1,6 +1,5 @@
-import axios from 'axios';
+import axios from '../axios';
 import { clearErrors, returnErrors } from './errorsActions';
-import { tokenConfig } from './userActions';
 
 import {
     GET_TEAM_TASKS
@@ -9,7 +8,6 @@ import {
 
 export const getTeamTasks = (team) => (dispatch, getState) => {
     let config = {
-        headers: (tokenConfig(getState)).headers,
         params: {
             team: team
         }
@@ -25,7 +23,7 @@ export const getTeamTasks = (team) => (dispatch, getState) => {
 };
 
 export const createTask = (task) => (dispatch, getState) => {
-    return axios.post('/tasks', task, tokenConfig(getState))
+    return axios.post('/tasks', task)
         .then((res) => {
             dispatch(getTeamTasks(task.currentTeam.members));
             dispatch(clearErrors());
@@ -43,10 +41,7 @@ export const createTask = (task) => (dispatch, getState) => {
 }
 
 export const setTaskItems = (_id, newItem, team) => (dispatch, getState) => {
-    let config = {
-        headers: (tokenConfig(getState)).headers
-    }
-    axios.patch(`/tasks/${_id}`, { newItem, team }, config)
+    axios.patch(`/tasks/${_id}`, { newItem, team })
         .then((res) => {
             dispatch(getTeamTasks(team));
         })
@@ -54,7 +49,6 @@ export const setTaskItems = (_id, newItem, team) => (dispatch, getState) => {
 
 export const deleteTask = (taskId, team) => (dispatch, getState) => {
     let config = {
-        headers: (tokenConfig(getState)).headers,
         team: team
     }
     axios.delete(`/tasks/${taskId}`, config)
