@@ -1,0 +1,47 @@
+.MuiListItemText-root {
+    flex: 1 !important;
+}
+
+.timestamp {
+    text-align-last: right;
+}
+
+.username {
+    font-weight:500;
+    font-size: 16px;
+    color: #4E75B0;
+}
+
+.email {
+    font-weight: 300;
+    font-size: 14px;
+    color: grey;
+}
+
+.MuiTypography-displayBlock {
+    display: inline;
+}
+
+.alert-activity {
+    background-color: transparent !important;
+}
+
+.MuiDivider-root {
+    background-color: #ccd9fc  !important;
+}
+
+.pagination {
+    justify-content: center;
+    bottom: 0;
+position: absolute;
+width: 100%;
+padding-bottom: 12px;
+}
+
+.MuiPaginationItem-icon {
+    color: #ffc851;
+}
+
+.MuiPaginationItem-page:hover {
+    background-color: #fdf9f2 !important;
+}

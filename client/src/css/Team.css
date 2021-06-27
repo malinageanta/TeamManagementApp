@@ -1,0 +1,107 @@
+.addTeam-header {
+    color: #3C4166;
+}
+
+.addTeam-subheader {
+    color: #AFC7EC;
+}
+
+.centered-both {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.centered-horizontally {
+    text-align: center;
+}
+
+/* Split the screen in half */
+.addTeam-split {
+    height: 50%;
+    width: 50%;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    overflow-x: hidden;
+    padding-top: 20px;
+  }
+  
+  /* Control the left side */
+  .addTeam-left {
+    left: 0;
+  }
+  
+  /* Control the right side */
+  .adddTeam-right {
+    right: 0;
+  }
+
+  .createTeam-card {
+      min-width: 30vw;
+  }
+
+  .addTeam-grid {
+    flex-grow: 1;
+    padding: 3%;
+  }
+
+  .join-button {
+    color: #FBB03C !important;
+    border-color: #F68245 !important;
+  }
+
+  .join-button:hover, .join-button:focus {
+    color: #FBB03C!important;
+    font-weight: 500;
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .create-button {
+    color: #294E95!important;
+    border-color: #183d83 !important;
+  }
+
+  .create-button:hover, .create-button:focus {
+    color: #294E95!important;
+    font-weight: 500;
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .exit-icon {
+    color: #FBB03C;
+  }
+
+  .exit-button {
+    padding: 6px !important;
+  }
+
+  .exit-button:hover {
+    background-color: #FFF8EA !important;
+  }
+
+  .dialog-input .MuiInputBase-input{
+    font-size: small !important;
+}
+
+.team-submit {
+  color: #FFC851 !important;
+}
+
+.team-submit:hover {
+  color: #FFC851;
+  background-color: #fdf9f2 !important;
+}
+
+.team-cancel {
+  color: #3f51b5 !important;
+}
+
+.team-cancel:hover {
+  color: #3f51b5;
+  background-color: #F8F9FF !important;
+}

@@ -33,6 +33,7 @@ router.post('/', auth, async (req, res) => {
           admin: req.body.admin,
           members: req.body.members
         });
+        await newTeam.activities.push({ name: req.user.email, timestamp: Date.now(), msg: `${req.user.firstName} ${req.user.lastName} created team ${newTeam.name}.`, type: "success" })
         const savedNewTeam = await newTeam.save();
         res.json(savedNewTeam);
       });
@@ -72,6 +73,17 @@ router.patch('/:teamId/deleteMember', auth, async (req, res) => {
   try {
     var team = await Team.findById(req.params.teamId);
     await team.members.pull(req.body.memberId);
+
+    var removedMember = await User.findOne({ email: req.body.memberId });
+    let msg = "";
+    if (req.body.memberHasLeft) {
+      msg = `${removedMember.firstName} ${removedMember.lastName} has left the team.`;
+    }
+    else {
+      msg = `${req.user.firstName} ${req.user.lastName} removed member ${removedMember.firstName} ${removedMember.lastName}`;
+    }
+    await team.activities.push({ name: req.user.email, timestamp: Date.now(), msg: msg, type: "error" })
+
     team.save();
     res.status(202).send();
   }
@@ -92,6 +104,8 @@ router.patch('/:teamId/addMember', auth, async (req, res) => {
     if (user.team) return res.status(400).json({ msg: 'This user is already a member in another team!' });
 
     await team.members.push(newMember);
+    await team.activities.push({ name: req.user.email, timestamp: Date.now(), msg: `${req.user.firstName} ${req.user.lastName} added member ${user.firstName} ${user.lastName}.`, type: "info" })
+
     team.save();
 
     await User.findOneAndUpdate(

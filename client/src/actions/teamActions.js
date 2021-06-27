@@ -78,8 +78,8 @@ export const setTeamItem = (_id, itemToBeUpdated, newItem) => (dispatch, getStat
         })
 }
 
-export const deleteTeamMember = (teamId, teamName, member) => (dispatch, getState) => {
-    return axios.patch(`/teams/${teamId}/deleteMember`, { memberId: member }, tokenConfig(getState))
+export const deleteTeamMember = (teamId, teamName, member, memberHasLeft) => (dispatch, getState) => {
+    return axios.patch(`/teams/${teamId}/deleteMember`, { memberId: member, memberHasLeft }, tokenConfig(getState))
         .then(() => {
             dispatch(getUserTeam(teamName));
         })

@@ -13,4 +13,6 @@ const store = createStore(rootReducer, initialState, compose(
         : f => f
 ));
 
+export const getState = store.getState;
+
 export default store;

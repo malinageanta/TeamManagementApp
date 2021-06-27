@@ -1,0 +1,49 @@
+.nav-simple-button .nav-link {
+    color: #294E95 !important;
+    font-family: "Segoe UI";
+}
+
+.nav-dropdown-button .nav-link {
+    color: #294E95 !important;
+    font-family: "Segoe UI";
+}
+
+.nav-dropdown-button .dropdown-item {
+    color: #294E95 !important;
+    font-family: "Segoe UI";
+}
+
+.nav-dropdown-button .dropdown-item:focus, .dropdown-item:hover {
+    background-color: #f7fafc !important;
+}
+
+.navbar {
+    box-shadow: #aec7eb 0px 3px 3px -2px, #eaf3fa 0px 3px 4px 0px, #ccd9fc 0px 1px 8px 0px !important;
+}
+
+.nav-div-center {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.nav-icon {
+    font-size: 21;
+    color: #ffc851;
+}
+
+.nav-avatar {
+    display:block;
+    margin:auto;
+    width: 36px !important;
+    height: 36px !important;
+}
+
+.nav-avatar-default {
+    display:block;
+    margin:auto;
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 12px !important;
+    background-color: #FCA9C7 !important;
+}

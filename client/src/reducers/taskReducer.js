@@ -1,5 +1,5 @@
 import {
-    GET_TEAM_TASKS
+    GET_TEAM_TASKS,
 } from '../actions/types';
 
 const initState = {

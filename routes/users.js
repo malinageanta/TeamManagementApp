@@ -45,9 +45,9 @@ router.post('/', async (req, res) => {
               .then(user => {
                 delete user.password;
                 jwt.sign(
-                  { _id: user._id },
+                  { _id: user._id, email: user.email, firstName: user.firstName, lastName: user.lastName },
                   process.env.JWT_SECRET,
-                  { expiresIn: 3600 },
+                  { expiresIn: 6000 },
                   (err, token) => {
                     if (err) throw err;
                     res.json({
@@ -80,7 +80,7 @@ router.patch('/:id', auth, async (req, res) => {
     )
     delete updatedUser.password;
     if (updatedUser) {
-      return res.json(updatedUser);
+      return res.status(202).json(updatedUser);
     }
   }
   catch (err) {

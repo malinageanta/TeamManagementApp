@@ -24,7 +24,9 @@ export const loadUser = () => (dispatch, getState) => {
                 type: USER_LOADED,
                 payload: res.data
             })
-            dispatch(getUserTeam(res.data.team));
+            if (res?.data?.team) {
+                dispatch(getUserTeam(res.data.team));
+            }
             dispatch(clearErrors());
         })
         .catch(error => {
@@ -63,7 +65,9 @@ export const register = ({ firstName, lastName, email, password, role, team, pho
     axios.post('/users', body, config)
         .then(res => {
             dispatch({ type: REGISTER_SUCCESS, payload: res.data });
-            dispatch(getUserTeam(res.data.user.team));
+            if (res?.data?.user?.team) {
+                dispatch(getUserTeam(res.data.user.team));
+            }
             dispatch(clearErrors());
         })
         .catch(error => {
@@ -89,7 +93,9 @@ export const login = ({ email, password, role, team, photo }) => dispatch => {
     axios.post('/auth', body, config)
         .then(res => {
             dispatch({ type: LOGIN_SUCCESS, payload: res.data });
-            dispatch(getUserTeam(res.data.user.team));
+            if (res?.data?.user?.team) {
+                dispatch(getUserTeam(res.data.user.team));
+            }
             dispatch(clearErrors());
         })
         .catch(error => {

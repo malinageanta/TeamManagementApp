@@ -6,6 +6,10 @@ const taskSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    type: {
+        type: String,
+        required: true
+    },
     priority: {
         type: String,
         required: true
@@ -15,7 +19,7 @@ const taskSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        required: true
+        default: "Open"
     },
     assignee: {
         type: Object,

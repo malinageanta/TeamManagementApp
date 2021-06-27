@@ -10,7 +10,7 @@ require('dotenv/config');
 
 router.post('/', async (req, res) => {
   try {
-    const { email, password, role, team, photo } = req.body;
+    const { email, password } = req.body;
     if (!email || !password) {
       return res.status(400).json({ msg: 'Please enter all fields.' });
     }
@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
             if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
             delete user.password;
             jwt.sign(
-              { _id: user._id },
+              { _id: user._id, email: user.email, firstName: user.firstName, lastName: user.lastName },
               process.env.JWT_SECRET,
               { expiresIn: 6000 },
               (err, token) => {

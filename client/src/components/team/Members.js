@@ -9,12 +9,13 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import { deleteTeamMember, addTeamMember } from '../../actions/teamActions';
-import { setUserItem } from '../../actions/userActions';
+import { setUserItem, tokenConfig } from '../../actions/userActions';
 import { Alert } from '@material-ui/lab';
 import NavBar from '../NavBar';
 import { DataGrid } from '@material-ui/data-grid';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { getState } from '../../store';
 
 
 
@@ -28,7 +29,9 @@ class Members extends Component {
             memberToBeDeleted: "",
             formOpen: false,
             memberToBeAdded: "",
-            errorMsg: null
+            errorMsg: null,
+            memberHasLeft: false,
+            deleteMsg: ""
         }
 
         this.getMemberInfo = this.getMemberInfo.bind(this);
@@ -49,7 +52,19 @@ class Members extends Component {
     }
 
     componentDidMount() {
-        this.getAllMembers();
+        this.getAllMembers(getState);
+        if (!this.props.user.role === "admin") {
+            this.setState({
+                memberHasLeft: true,
+                deleteMsg: "Are you sure you want to leave this team?"
+            })
+        }
+        else {
+            this.setState({
+                memberHasLeft: false,
+                deleteMsg: "Are you sure you want to remove this member?"
+            })
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -64,12 +79,15 @@ class Members extends Component {
         }
     }
 
-    getAllMembers() {
-        return axios.get('/users', {
+    getAllMembers(getState) {
+        let config = {
+            headers: (tokenConfig(getState)).headers,
             params: {
                 team: this.props.user?.team
             }
-        })
+        }
+
+        return axios.get('/users', config)
             .then(res => {
                 this.setState({
                     allMembers: res.data
@@ -124,25 +142,18 @@ class Members extends Component {
     }
 
     getDeleteDialog() {
-        let msg = "";
-        if (!this.props.user.role === "admin") {
-            msg = "Are you sure you want to leave this team?"
-        }
-        else {
-            msg = "Are you sure you want to remove this member?";
-        }
         return <Dialog
             open={this.state.dialogOpen}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <DialogTitle id="alert-dialog-title" style={{ color: "#294E95" }}>{msg}</DialogTitle>
+            <DialogTitle id="alert-dialog-title" style={{ color: "#294E95" }}>{this.state.deleteMsg}</DialogTitle>
             <DialogActions>
-                <Button onClick={this.handleDialogClose} className="add-member-cancel">
-                    Cancel
-                </Button>
                 <Button onClick={this.handleMemberDelete} className="add-member-submit" autoFocus>
                     Yes
+                </Button>
+                <Button onClick={this.handleDialogClose} className="add-member-cancel">
+                    Cancel
                 </Button>
             </DialogActions>
         </Dialog>
@@ -165,11 +176,11 @@ class Members extends Component {
         const team_id = this.props.team._id;
         const team_name = this.props.team.name;
         const user_id = this.state.memberToBeDeleted._id;
-        this.props.deleteTeamMember(team_id, team_name, this.state.memberToBeDeleted.email)
+        this.props.deleteTeamMember(team_id, team_name, this.state.memberToBeDeleted.email, this.state.memberHasLeft)
             .then(() => {
                 this.props.setUserItem(user_id, 'team', "", this.props.user._id !== user_id)
                     .then(async () => {
-                        await this.getAllMembers();
+                        await this.getAllMembers(getState);
                         this.handleDialogClose();
                     })
             })
@@ -233,8 +244,8 @@ class Members extends Component {
     getAddMemberForm() {
         const alert = <Alert variant="outlined" severity="error"> {this.state.errorMsg} </Alert>
         const form =
-            <Dialog open={this.state.formOpen} onClose={this.handleFormClose} aria-labelledby="form-dialog-title" className="add-member-dialog">
-                <DialogTitle id="form-dialog-title" className="add-member-dialog-title"> Add a member to your team! </DialogTitle>
+            <Dialog open={this.state.formOpen} onClose={this.handleFormClose} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title" style={{ color: "#294E95" }}> Add a member to your team! </DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -249,11 +260,11 @@ class Members extends Component {
                     {this.state.errorMsg ? alert : null}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={this.handleFormClose} className="add-member-cancel">
-                        Cancel
-                    </Button>
                     <Button onClick={this.handleAddMember} className="add-member-submit">
                         Add
+                    </Button>
+                    <Button onClick={this.handleFormClose} className="add-member-cancel">
+                        Cancel
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -263,7 +274,7 @@ class Members extends Component {
 
     getTableOfMembers() {
         const addButton = <IconButton color="primary" className="addMember" id="addMember" onClick={this.handleFormOpen}> <AddCircleOutlineIcon /> </IconButton>
-        const rows = this.createTableData(this.state.allMembers, this.props.user);
+        const rows = this.createTableData(this.state?.allMembers, this.props?.user);
         const columns = [
             { field: 'id', headerName: 'ID', type: 'number', width: 100 },
             {
@@ -276,15 +287,15 @@ class Members extends Component {
             { field: 'email', headerName: 'Email', width: 300 },
             { field: 'role', headerName: 'Role', width: 110 },
             {
-                field: 'delete', headerName: 'Delete', width: 120, renderCell: (params) => {
+                field: 'delete', filterable: false, sortable: false, headerName: 'Delete', width: 120, renderCell: (params) => {
                     return this.getMemberDeleteButton(this.props.user, params.row);
                 }
             },
-            { field: 'add', filterable: false, sortable: false, width: 100, renderHeader: () => { return this.props.user.role === "admin" ? addButton : null } }
+            this.props.user.role === "admin" ? { field: 'add', filterable: false, sortable: false, width: 100, renderHeader: () => addButton } : {}
         ]
 
         const table = <div style={{ height: 500, width: '100%', paddingTop: "30px" }}>
-            <DataGrid rows={rows} columns={columns} pageSize={8} hideFooterSelectedRowCount={true} />
+            <DataGrid rows={rows} columns={columns} pageSize={6} hideFooterSelectedRowCount={true} />
         </div>
 
         return table;

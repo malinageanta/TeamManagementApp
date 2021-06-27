@@ -47,6 +47,8 @@
 
 .MuiDataGrid-columnHeader {
     outline: none !important;
+    color: #294E95;
+    font-weight: 400 !important;
 }
 
 .Mui-selected {
@@ -70,37 +72,47 @@
 }
 
 .add-member-dialog .MuiFormLabel-root.Mui-focused {
-    color: #294E95;
+    color: #f8c24e !important;
 }
   
 .add-member-dialog .MuiInput-underline:after  {
-    border-bottom: 2px solid #294E95;
+    border-bottom: 2px solid #f8c24e !important;
 }
 
 .add-member-dialog-title {
-    color: #f8c24e;
-}
-
-.add-member-cancel  {
-    background-color: #f8c24e !important;
-    color: white !important;
-    font-weight: 400;
-}
-
-.add-member-cancel:hover {
-    font-weight: 600;
-}
-
-.add-member-submit  {
-    background-color: #294E95!important;
-    color: white !important;
-    font-weight: 400;
-}
-
-.add-member-submit:hover {
-    font-weight: 600;
+    color: #294E95;
 }
 
 .add-member-input .MuiInputBase-input{
     font-size: small !important;
 }
+
+.add-member-submit {
+    color: #FFC851 !important;
+ }
+
+ .add-member-submit:hover {
+    color: #FFC851;
+    background-color: #fdf9f2 !important;
+ }
+
+ .add-member-cancel {
+    color: #3f51b5 !important;
+ }
+
+ .add-member-cancel:hover {
+    color: #3f51b5;
+    background-color: #F8F9FF !important;
+ }
+
+ .MuiDataGrid-root .MuiDataGrid-columnHeaderTitleContainer {
+     justify-content: center;
+ }
+
+ .MuiDataGrid-root .MuiDataGrid-cell {
+    text-align-last: center;
+ }
+
+ .MuiDataGrid-root .MuiDataGrid-cellRight {
+    text-align-last: right;
+ }

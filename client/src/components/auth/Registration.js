@@ -49,7 +49,7 @@ class Registration extends Component {
         }
         else {
             if (this.state.repeatedPassword !== null) {
-                this.setState({ errorMsg: "The passwords does not match." })
+                this.setState({ errorMsg: "The passwords do not match." })
             }
         }
 

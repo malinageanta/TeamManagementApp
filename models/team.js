@@ -13,6 +13,10 @@ const teamSchema = new mongoose.Schema({
     members: {
         type: [],
         required: true
+    },
+    activities: {
+        type: [],
+        default: []
     }
 });
 

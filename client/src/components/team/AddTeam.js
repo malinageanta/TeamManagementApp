@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Card, Button } from 'react-bootstrap';
+import MaterialButton from '@material-ui/core/Button';
 import addTeamBackground from '../../images/join-team.png';
 import '../../css/Team.css';
 import '../../css/Authentication.css';
@@ -84,7 +85,7 @@ class AddTeam extends Component {
         const alert = <Alert variant="outlined" severity="error"> {this.state.errorMsg} </Alert>
         const form =
             <Dialog className="create-team-dialog" open={this.state.createFormOpen} onClose={this.handleCreateFormClose} aria-labelledby="form-dialog-title">
-                <DialogTitle className="dialog-title"> Choose a name for your team! </DialogTitle>
+                <DialogTitle style={{ color: "#294E95" }}> Choose a name for your team! </DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -99,12 +100,12 @@ class AddTeam extends Component {
                     {this.state.errorMsg ? alert : null}
                 </DialogContent>
                 <DialogActions>
-                    <Button className="option-button" variant="danger" onClick={this.handleCreateFormClose}>
-                        Cancel
-                    </Button>
-                    <Button className="submit-button" variant="info" onClick={this.handleCreateTeam}>
+                    <MaterialButton className="team-submit" onClick={this.handleCreateTeam}>
                         Add
-                    </Button>
+                    </MaterialButton>
+                    <MaterialButton className="team-cancel" onClick={this.handleCreateFormClose}>
+                        Cancel
+                    </MaterialButton>
                 </DialogActions>
             </Dialog>
 
@@ -154,7 +155,7 @@ class AddTeam extends Component {
         const alert = <Alert variant="outlined" severity="error"> {this.state.errorMsg} </Alert>
         const form =
             <Dialog className="join-team-dialog" open={this.state.joinFormOpen} onClose={this.handleCreateFormClose} aria-labelledby="form-dialog-title">
-                <DialogTitle className="addTeam-header"> Tell us the team you want to join! </DialogTitle>
+                <DialogTitle style={{ color: "#294E95" }}> Tell us the team you want to join! </DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -169,12 +170,12 @@ class AddTeam extends Component {
                     {this.state.errorMsg ? alert : null}
                 </DialogContent>
                 <DialogActions>
-                    <Button className="submit-button" variant="info" onClick={this.handleJoinFormClose}>
-                        Cancel
-                    </Button>
-                    <Button className="option-button" variant="danger" onClick={this.handleJoinTeam}>
+                    <MaterialButton className="team-submit" onClick={this.handleJoinTeam}>
                         Add
-                    </Button>
+                    </MaterialButton>
+                    <MaterialButton className="team-cancel" onClick={this.handleJoinFormClose}>
+                        Cancel
+                    </MaterialButton>
                 </DialogActions>
             </Dialog>
 
@@ -205,7 +206,7 @@ class AddTeam extends Component {
         }
         const createForm = this.getCreateForm();
         const joinForm = this.getJoinForm();
-
+        const firstName = this.props.user.firstName.split(' ');
         return (
             <div>
                 <div className="split right">
@@ -215,7 +216,7 @@ class AddTeam extends Component {
                 </div>
                 <div className="split left">
                     <div className="centered">
-                        <h1 className="addTeam-header">Hello, {this.props.user.firstName}!</h1>
+                        <h1 className="addTeam-header">Hello, {firstName[0]}!</h1>
                         <h5 className="addTeam-subheader"> Currently, you are not part of any team!</h5>
                         <Card className="text-center card" style={{ backgroundColor: 'transparent', border: 'none', color: 'white', paddingTop: "24px" }}>
                             <Button className="create-button" variant="outline-danger" onClick={this.handleCreateFormOpen} name="create">Create a new team</Button>
@@ -224,7 +225,7 @@ class AddTeam extends Component {
                             <h5 className="addTeam-subheader"> or </h5>
                             <Button className="join-button" variant="outline-info" onClick={this.handleJoinFormOpen} name="join">Join a team</Button>
                             <Card.Footer style={{ backgroundColor: 'transparent', border: 'none' }}>
-                                <h8 className="addTeam-subheader"> Did you change your mind? </h8>
+                                <h6 className="addTeam-subheader"> Did you change your mind? </h6>
                                 <IconButton className="exit-button" onClick={() => this.handleLogout()}>
                                     <ArrowForwardIcon className="exit-icon" fontSize="small" />
                                     {this.state.logout ? <Logout /> : null}

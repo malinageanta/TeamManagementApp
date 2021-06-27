@@ -7,39 +7,29 @@ import {
 } from './types';
 
 
-export const getTeamTasks = (teamMembers) => (dispatch, getState) => {
+export const getTeamTasks = (team) => (dispatch, getState) => {
     let config = {
         headers: (tokenConfig(getState)).headers,
         params: {
-            members: teamMembers
+            team: team
         }
     }
-
-    return axios.get('/tasks', config)
+    return axios.get('/tasks/usersWithTasks', config)
         .then(res => {
             dispatch({
                 type: GET_TEAM_TASKS,
                 payload: res.data
             })
-            dispatch(clearErrors());
             return res.data;
         })
-        .catch(error => {
-            dispatch(
-                returnErrors(
-                    error.response.data,
-                    error.response.status,
-                    'GET_TEAM_TASKS_FAIL'
-                )
-            );
-        });
 };
 
 export const createTask = (task) => (dispatch, getState) => {
     return axios.post('/tasks', task, tokenConfig(getState))
-        .then(() => {
+        .then((res) => {
             dispatch(getTeamTasks(task.currentTeam.members));
             dispatch(clearErrors());
+            return res.status;
         })
         .catch(error => {
             dispatch(
@@ -52,22 +42,23 @@ export const createTask = (task) => (dispatch, getState) => {
         });
 }
 
-export const setTaskItem = (_id, itemToBeUpdated, newItem, teamMembers) => (dispatch, getState) => {
+export const setTaskItems = (_id, newItem, team) => (dispatch, getState) => {
     let config = {
-        headers: (tokenConfig(getState)).headers,
-        params: {
-            itemToBeUpdated: itemToBeUpdated
-        }
+        headers: (tokenConfig(getState)).headers
     }
-    axios.patch(`/tasks/${_id}`, { newItem }, config)
-        .then(() => {
-            dispatch(getTeamTasks(teamMembers));
+    axios.patch(`/tasks/${_id}`, { newItem, team }, config)
+        .then((res) => {
+            dispatch(getTeamTasks(team));
         })
 }
 
-export const deleteTask = (taskId, teamMembers) => (dispatch, getState) => {
-    return axios.delete(`/teams/${taskId}`, tokenConfig(getState))
-        .then(() => {
-            dispatch(getTeamTasks(teamMembers));
+export const deleteTask = (taskId, team) => (dispatch, getState) => {
+    let config = {
+        headers: (tokenConfig(getState)).headers,
+        team: team
+    }
+    axios.delete(`/tasks/${taskId}`, config)
+        .then((res) => {
+            dispatch(getTeamTasks(team));
         })
 }

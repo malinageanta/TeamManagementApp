@@ -10,6 +10,9 @@ import '../../css/Drawer.css';
 class UploadForm extends Component {
     constructor(props) {
         super(props);
+
+        this.uploadPictureInput = React.createRef();
+        this.uploadPicture = this.uploadPicture.bind(this);
         this.changeHandler = this.changeHandler.bind(this);
     }
 
@@ -22,7 +25,9 @@ class UploadForm extends Component {
                 }, 'base64', 100, 100);
         });
     }
-
+    uploadPicture() {
+        this.uploadPictureInput.current.click()
+    }
     async changeHandler(e) {
         try {
             const selectedImage = e.target.files[0];
@@ -42,13 +47,9 @@ class UploadForm extends Component {
 
     render() {
         return (
-            <div className="center">
-                <input type="file" accept=".jpg,.jpeg,.png" style={{ display: "none" }} id="icon-button-file" onChange={this.changeHandler} />
-                <label htmlFor="icon-button-file">
-                    <Link>
-                        Change profile picture
-                    </Link>
-                </label>
+            <div onClick={this.uploadPicture} >
+                Upload profile picture
+                <input type="file" ref={this.uploadPictureInput} accept=".jpg,.jpeg,.png" style={{ display: "none" }} onChange={this.changeHandler} onClick={e => e.stopPropagation()} />
             </div>
         )
     }

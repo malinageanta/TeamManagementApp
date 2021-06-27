@@ -7,43 +7,18 @@ import { getUserTeam, createTeam } from '../actions/teamActions';
 import { Avatar } from '@material-ui/core';
 import '../css/Drawer.css';
 import NavBar from './NavBar';
+import Activities from './team/Activities';
 
 
 
 class Dashboard extends Component {
-    constructor(props) {
-        super(props);
-
-        this.handleTeamCreation = this.handleTeamCreation.bind(this);
-    }
-    componentDidMount() {
-        // const user = this.props.user;
-        // this.props.getUserTeam(user.team);
-    }
-
-    handleTeamCreation(e) {
-        e.preventDefault();
-
-        const user = this.props.user;
-        const role = 'admin';
-        const team = "";
-        //const newTeam = { name: "tessst123", admin: "xuleanu", members: [] };
-
-        user.role = role;
-        let itemToBeUpdated = 'role';
-        let newItem = user.role;
-        this.props.setUserItem(user._id, itemToBeUpdated, newItem, false);
-        user.team = team;
-        //this.props.getUserTeam(user.team);
-        //this.props.createTeam(newTeam);
-
-    }
 
     render() {
 
         return (
             <div>
                 <NavBar />
+                <Activities />
             </div>
         )
     }

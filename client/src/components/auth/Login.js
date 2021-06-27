@@ -76,7 +76,7 @@ class Registration extends Component {
                         <h1 className="auth-header">Login</h1>
                         <Box boxShadow={3} className="auth-box">
                             <Card className="auth-card" variant="outlined">
-                                <Form class="auth-form" onSubmit={this.handleSubmit}>
+                                <Form className="auth-form" onSubmit={this.handleSubmit}>
                                     <Form.Group className="auth-form-group">
                                         <Form.Control type="email" name="email" id="Email" placeholder="Email" onChange={this.handleChange} />
                                     </Form.Group>
